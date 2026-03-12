@@ -5,7 +5,7 @@
 export interface GameConfig {
   id: string;
   pairs: number;
-  mistakes: number;
+  mistakes: number | null; // null = unlimited
   timeLimit: number | null; // seconds; null = no limit
   creatorSteamId: string | null;
   createdAt: number; // unix seconds
@@ -52,7 +52,7 @@ export interface GameState {
 
 export interface CreateGameRequest {
   pairs: number;
-  mistakes: number;
+  mistakes: number | null; // null = unlimited
   timeLimit: number | null;
   secret: string;
 }
@@ -64,7 +64,7 @@ export interface CreateGameResponse {
 export interface GameConfigResponse {
   id: string;
   pairs: number;
-  mistakes: number;
+  mistakes: number | null;
   timeLimit: number | null;
   creatorSteamId: string | null;
   creatorUsername: string | null;

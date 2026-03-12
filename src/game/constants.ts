@@ -17,12 +17,6 @@ export const minMistakes = (pairs: number): number => Math.ceil(pairs / 2);
 /** How long (ms) to show a mismatched pair before flipping back */
 export const MISMATCH_DELAY_MS = 1000;
 
-/** Image pool directory (relative to public/) */
-export const IMAGE_DIR = "/images/";
-
-/** Total images available in the pool */
-export const IMAGE_POOL_SIZE = 100;
-
 // ---------------------------------------------------------------------------
 // Grid layout — near-square grids for each pair range
 // ---------------------------------------------------------------------------

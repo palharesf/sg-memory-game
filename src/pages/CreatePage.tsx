@@ -1,11 +1,203 @@
-// TODO: Phase 3 — game creator form
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { api } from "@/services/api";
+import { MIN_PAIRS, MAX_PAIRS, defaultMistakes, minMistakes } from "@/game/constants";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import AdSlot from "@/components/AdSlot";
+
+const DEFAULT_PAIRS = 8;
+
 export default function CreatePage() {
+  const navigate = useNavigate();
+
+  const [pairs, setPairs] = useState(DEFAULT_PAIRS);
+  // null = unlimited
+  const [mistakes, setMistakes] = useState<number | "">(defaultMistakes(DEFAULT_PAIRS));
+  const [timeLimit, setTimeLimit] = useState<number | "">("");
+  const [secret, setSecret] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  function handlePairsChange(value: number) {
+    const clamped = Math.max(MIN_PAIRS, Math.min(MAX_PAIRS, value));
+    setPairs(clamped);
+    // Keep mistakes in sync only if it was still at the previous default
+    setMistakes((prev) => {
+      if (prev === "") return ""; // user already cleared it (unlimited)
+      const wasDefault = prev === defaultMistakes(pairs);
+      return wasDefault ? defaultMistakes(clamped) : Math.max(minMistakes(clamped), prev);
+    });
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+
+    if (!secret.trim()) {
+      setError("Please enter a secret to hide.");
+      return;
+    }
+
+    const mistakesValue = mistakes === "" ? null : mistakes;
+    if (mistakesValue !== null && mistakesValue < minMistakes(pairs)) {
+      setError(`Minimum mistakes for ${pairs} pairs is ${minMistakes(pairs)}.`);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { id } = await api.createGame({
+        pairs,
+        mistakes: mistakesValue,
+        timeLimit: timeLimit === "" ? null : timeLimit,
+        secret: secret.trim(),
+      });
+      navigate(`/play/${id}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to create game.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const mistakesMin = minMistakes(pairs);
+  const totalCards = pairs * 2;
+
   return (
-    <div className="max-w-lg mx-auto px-4 py-12">
-      <h1 className="text-2xl font-semibold text-[var(--color-text-bright)] mb-2">
-        Create a Memory Game
-      </h1>
-      <p className="text-[var(--color-text-muted)]">Creator form coming soon.</p>
+    <div className="max-w-xl mx-auto px-4">
+      {/* Hero */}
+      <div className="flex flex-col items-center text-center py-10 pb-8">
+        <img src="/logo.png" alt="SG Memory Game" className="w-24 h-24 rounded-2xl mb-4 shadow-lg" />
+        <h1 className="text-3xl font-bold text-[var(--color-text-bright)] mb-2">SG Memory Game</h1>
+        <p className="text-[var(--color-text-muted)] max-w-sm">
+          Create a memory game, hide a secret, and challenge the SteamGifts community.
+        </p>
+      </div>
+
+      <div className="border-t border-[var(--color-border)] pt-8 pb-10">
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Pairs */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="pairs" className="text-[var(--color-text)]">
+              Pairs
+            </Label>
+            <span className="text-xs text-[var(--color-text-muted)]">
+              {totalCards} cards · {MIN_PAIRS}–{MAX_PAIRS}
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <input
+              id="pairs"
+              type="range"
+              min={MIN_PAIRS}
+              max={MAX_PAIRS}
+              value={pairs}
+              onChange={(e) => handlePairsChange(Number(e.target.value))}
+              className="flex-1 accent-[var(--color-primary)]"
+            />
+            <span className="w-8 text-center text-[var(--color-text-bright)] font-mono font-semibold">
+              {pairs}
+            </span>
+          </div>
+          <p className="text-xs text-[var(--color-text-muted)]">
+            More pairs = harder game, longer to solve.
+          </p>
+        </div>
+
+        {/* Mistakes */}
+        <div className="space-y-2">
+          <Label htmlFor="mistakes" className="text-[var(--color-text)]">
+            Mistakes allowed{" "}
+            <span className="text-[var(--color-text-muted)] font-normal">(optional)</span>
+          </Label>
+          <div className="flex items-center gap-2">
+            <Input
+              id="mistakes"
+              type="number"
+              min={mistakesMin}
+              placeholder="No limit"
+              value={mistakes}
+              onChange={(e) =>
+                setMistakes(e.target.value === "" ? "" : Number(e.target.value))
+              }
+              className="w-36 bg-[var(--color-bg-elevated)] border-[var(--color-border)] text-[var(--color-text)]"
+            />
+            <span className="text-sm text-[var(--color-text-muted)]">
+              {mistakes === "" ? "unlimited" : `min ${mistakesMin}`}
+            </span>
+          </div>
+          <p className="text-xs text-[var(--color-text-muted)]">
+            Leave empty for unlimited mistakes (relaxed mode).
+          </p>
+        </div>
+
+        {/* Time limit */}
+        <div className="space-y-2">
+          <Label htmlFor="timeLimit" className="text-[var(--color-text)]">
+            Time limit{" "}
+            <span className="text-[var(--color-text-muted)] font-normal">(optional)</span>
+          </Label>
+          <div className="flex items-center gap-2">
+            <Input
+              id="timeLimit"
+              type="number"
+              min={10}
+              placeholder="No limit"
+              value={timeLimit}
+              onChange={(e) =>
+                setTimeLimit(e.target.value === "" ? "" : Number(e.target.value))
+              }
+              className="w-36 bg-[var(--color-bg-elevated)] border-[var(--color-border)] text-[var(--color-text)]"
+            />
+            <span className="text-sm text-[var(--color-text-muted)]">seconds</span>
+          </div>
+          <p className="text-xs text-[var(--color-text-muted)]">
+            Leave empty for endless time (relaxed mode).
+          </p>
+        </div>
+
+        {/* Secret */}
+        <div className="space-y-2">
+          <Label htmlFor="secret" className="text-[var(--color-text)]">
+            Secret
+          </Label>
+          <Input
+            id="secret"
+            type="text"
+            placeholder="SteamGifts link or 5-letter code"
+            value={secret}
+            onChange={(e) => setSecret(e.target.value)}
+            className="bg-[var(--color-bg-elevated)] border-[var(--color-border)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)]"
+            autoComplete="off"
+          />
+          <p className="text-xs text-[var(--color-text-muted)]">
+            Shown to players only after they win. Stored securely server-side.
+          </p>
+        </div>
+
+        {error && (
+          <p className="text-sm text-[var(--color-danger)] bg-[var(--color-danger)]/10 border border-[var(--color-danger)]/30 rounded px-3 py-2">
+            {error}
+          </p>
+        )}
+
+        <Button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-[var(--color-primary)] text-[var(--color-bg-base)] hover:bg-[var(--color-primary-hover)] font-semibold"
+        >
+          {loading ? "Creating…" : "Create Game"}
+        </Button>
+      </form>
+
+      <div className="mt-10">
+        <AdSlot slot="create-bottom" className="w-full h-[90px]" />
+      </div>
+      </div>
     </div>
   );
 }

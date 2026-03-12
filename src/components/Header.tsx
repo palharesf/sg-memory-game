@@ -5,11 +5,9 @@ import { api } from "@/services/api";
 export default function Header() {
   return (
     <header className="h-14 flex items-center px-4 border-b border-[var(--color-border)] bg-[var(--color-bg-surface)]">
-      <Link
-        to="/"
-        className="font-semibold text-[var(--color-text-bright)] hover:text-[var(--color-primary)] transition-colors"
-      >
-        SG Memory
+      <Link to="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
+        <img src="/logo.png" alt="SG Memory Game" className="w-9 h-9 rounded-md" />
+        <span className="font-semibold text-[var(--color-text-bright)]">SG Memory Game</span>
       </Link>
 
       <nav className="ml-auto flex items-center gap-4">

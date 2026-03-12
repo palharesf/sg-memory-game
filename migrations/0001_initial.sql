@@ -3,7 +3,7 @@
 CREATE TABLE IF NOT EXISTS games (
   id          TEXT    PRIMARY KEY,
   pairs       INTEGER NOT NULL,
-  mistakes    INTEGER NOT NULL,
+  mistakes    INTEGER,                             -- NULL = unlimited
   time_limit  INTEGER,                          -- seconds; NULL = no limit
   secret      TEXT    NOT NULL,                 -- stored as-is; shown only on win
   creator_steam_id TEXT,                        -- NULL if created anonymously

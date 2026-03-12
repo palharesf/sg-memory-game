@@ -13,11 +13,13 @@ export const onRequestPost: PagesFunction<Env> = async (ctx) => {
   if (!body.pairs || body.pairs < 4 || body.pairs > 18) {
     return Response.json({ error: "pairs must be between 4 and 18" }, { status: 400 });
   }
-  if (!body.mistakes || body.mistakes < Math.ceil(body.pairs / 2)) {
-    return Response.json(
-      { error: "mistakes must be at least half of pairs (rounded up)" },
-      { status: 400 }
-    );
+  if (body.mistakes !== null && body.mistakes !== undefined) {
+    if (body.mistakes < Math.ceil(body.pairs / 2)) {
+      return Response.json(
+        { error: "mistakes must be at least half of pairs (rounded up)" },
+        { status: 400 }
+      );
+    }
   }
   if (body.timeLimit !== null && body.timeLimit !== undefined && body.timeLimit <= 0) {
     return Response.json({ error: "timeLimit must be positive" }, { status: 400 });
@@ -32,7 +34,7 @@ export const onRequestPost: PagesFunction<Env> = async (ctx) => {
   await ctx.env.DB.prepare(
     "INSERT INTO games (id, pairs, mistakes, time_limit, secret, creator_steam_id) VALUES (?, ?, ?, ?, ?, ?)"
   )
-    .bind(id, body.pairs, body.mistakes, body.timeLimit ?? null, body.secret.trim(), creatorSteamId)
+    .bind(id, body.pairs, body.mistakes ?? null, body.timeLimit ?? null, body.secret.trim(), creatorSteamId)
     .run();
 
   // Track games created if user is logged in

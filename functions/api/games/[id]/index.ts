@@ -19,7 +19,7 @@ export const onRequestGet: PagesFunction<Env> = async (ctx) => {
     .first<{
       id: string;
       pairs: number;
-      mistakes: number;
+      mistakes: number | null;
       time_limit: number | null;
       creator_steam_id: string | null;
       created_at: number;

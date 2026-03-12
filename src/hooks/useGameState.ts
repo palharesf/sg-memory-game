@@ -37,9 +37,7 @@ export function useGameState(config: GameConfig | null) {
       setState((prev) => {
         if (prev.status !== "playing") return prev;
 
-        // Time limit loss condition
         if (config?.timeLimit && elapsed / 1000 >= config.timeLimit) {
-          stopTimer();
           return { ...prev, timeElapsed: config.timeLimit * 1000, status: "lost" };
         }
 
@@ -48,14 +46,24 @@ export function useGameState(config: GameConfig | null) {
 
       rafRef.current = requestAnimationFrame(tick);
     },
-    [config, stopTimer]
+    [config]
   );
 
   const startTimer = useCallback(() => {
-    if (startTimeRef.current !== null) return; // already running
+    if (startTimeRef.current !== null) return;
     startTimeRef.current = performance.now();
     rafRef.current = requestAnimationFrame(tick);
   }, [tick]);
+
+  // Start timer when game begins, stop it when game ends
+  useEffect(() => {
+    if (state.status === "playing" && startTimeRef.current === null) {
+      startTimer();
+    }
+    if (state.status === "won" || state.status === "lost") {
+      stopTimer();
+    }
+  }, [state.status, startTimer, stopTimer]);
 
   // Clean up on unmount
   useEffect(() => () => stopTimer(), [stopTimer]);
@@ -76,63 +84,47 @@ export function useGameState(config: GameConfig | null) {
     initGame();
   }, [initGame]);
 
-  const flipCard = useCallback(
-    (cardId: number) => {
-      setState((prev) => {
-        if (shouldIgnoreClick(prev, cardId)) return prev;
+  // Pure state updater — no side effects inside
+  const flipCard = useCallback((cardId: number) => {
+    setState((prev) => {
+      if (shouldIgnoreClick(prev, cardId)) return prev;
 
-        const newFlipped = [...prev.flippedIds, cardId];
+      const updatedCards = prev.cards.map((c) =>
+        c.id === cardId ? { ...c, status: "flipped" as const } : c
+      );
+      const newFlipped = [...prev.flippedIds, cardId];
+      const next: GameState = {
+        ...prev,
+        status: "playing",
+        cards: updatedCards,
+        flippedIds: newFlipped,
+      };
 
-        // Start timer on first flip
-        if (prev.status === "idle") {
-          startTimer();
-        }
+      if (newFlipped.length < 2) return next;
 
-        const updatedCards = prev.cards.map((c) =>
-          c.id === cardId ? { ...c, status: "flipped" as const } : c
+      // Two cards flipped — evaluate match
+      const [idA, idB] = newFlipped as [number, number];
+
+      if (isMatch(updatedCards, idA, idB)) {
+        const resolvedCards = updatedCards.map((c) =>
+          c.id === idA || c.id === idB ? { ...c, status: "matched" as const } : c
         );
+        const matchedPairIds = [...prev.matchedPairIds, updatedCards[idA]!.pairId];
+        const won = isWon({ ...next, cards: resolvedCards });
 
-        const next: GameState = {
-          ...prev,
-          status: "playing",
-          cards: updatedCards,
-          flippedIds: newFlipped,
+        return {
+          ...next,
+          cards: resolvedCards,
+          flippedIds: [],
+          matchedPairIds,
+          status: won ? "won" : "playing",
         };
+      }
 
-        if (newFlipped.length < 2) return next;
-
-        // Two cards flipped — evaluate match
-        const [idA, idB] = newFlipped as [number, number];
-        const matched = isMatch(updatedCards, idA, idB);
-
-        if (matched) {
-          const resolvedCards = updatedCards.map((c) =>
-            c.id === idA || c.id === idB ? { ...c, status: "matched" as const } : c
-          );
-          const matchedPairIds = [
-            ...prev.matchedPairIds,
-            updatedCards[idA]!.pairId,
-          ];
-          const won = isWon({ ...next, cards: resolvedCards });
-          if (won) stopTimer();
-
-          return {
-            ...next,
-            cards: resolvedCards,
-            flippedIds: [],
-            matchedPairIds,
-            status: won ? "won" : "playing",
-          };
-        }
-
-        // Mismatch — lock board; cards flip back after delay (handled below)
-        return { ...next, boardLocked: true };
-      });
-
-      // Unlock after delay for mismatches (we schedule this outside setState)
-    },
-    [startTimer, stopTimer]
-  );
+      // Mismatch — lock board; cards flip back after delay
+      return { ...next, boardLocked: true };
+    });
+  }, []);
 
   // Resolve mismatch after delay
   useEffect(() => {
@@ -144,9 +136,7 @@ export function useGameState(config: GameConfig | null) {
 
         const [idA, idB] = prev.flippedIds as [number, number];
         const newMistakes = prev.mistakesMade + 1;
-        const lost = config ? isLost(newMistakes, config.mistakes) : false;
-
-        if (lost) stopTimer();
+        const lost = config ? isLost(newMistakes, config.mistakes ?? null) : false;
 
         const resetCards = prev.cards.map((c) =>
           c.id === idA || c.id === idB ? { ...c, status: "hidden" as const } : c
@@ -164,7 +154,7 @@ export function useGameState(config: GameConfig | null) {
     }, MISMATCH_DELAY_MS);
 
     return () => clearTimeout(timer);
-  }, [state.boardLocked, config, stopTimer]);
+  }, [state.boardLocked, config]);
 
   return { state, flipCard, resetGame: initGame };
 }

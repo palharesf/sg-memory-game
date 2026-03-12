@@ -6,7 +6,7 @@ pages_build_output_dir = "./dist"
 binding = "DB"
 database_name = "sg-memory-game-db"
 # database_id is populated after running: wrangler d1 create sg-memory-game-db
-database_id = "placeholder-replace-after-d1-create"
+database_id = "ff358b61-ad52-427f-a6b7-b874539ae34b"
 
 [vars]
 # Override these in Cloudflare dashboard for production

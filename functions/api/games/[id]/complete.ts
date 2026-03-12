@@ -24,7 +24,7 @@ export const onRequestPost: PagesFunction<Env> = async (ctx) => {
       id: string;
       secret: string;
       pairs: number;
-      mistakes: number;
+      mistakes: number | null;
       time_limit: number | null;
     }>();
 

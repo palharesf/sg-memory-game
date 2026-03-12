@@ -35,7 +35,9 @@ export function isWon(state: GameState): boolean {
 
 /**
  * Returns true when mistakes exceed the allowed limit (loss condition).
+ * null = unlimited mistakes, never lost by mistakes.
  */
-export function isLost(mistakesMade: number, mistakesAllowed: number): boolean {
+export function isLost(mistakesMade: number, mistakesAllowed: number | null): boolean {
+  if (mistakesAllowed === null) return false;
   return mistakesMade >= mistakesAllowed;
 }
