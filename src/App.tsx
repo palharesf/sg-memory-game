@@ -4,10 +4,12 @@ import PlayPage from "@/pages/PlayPage";
 import HistoryPage from "@/pages/HistoryPage";
 import NotFoundPage from "@/pages/NotFoundPage";
 import Header from "@/components/Header";
+import { AuthProvider } from "@/context/AuthContext";
 
 export default function App() {
   return (
     <BrowserRouter>
+      <AuthProvider>
       <div className="flex flex-col min-h-full">
         <Header />
         <main className="flex-1">
@@ -19,6 +21,7 @@ export default function App() {
           </Routes>
         </main>
       </div>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
