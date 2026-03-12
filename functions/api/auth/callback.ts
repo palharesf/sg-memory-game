@@ -10,47 +10,53 @@ import { signJwt, verifyOpenId, fetchSteamProfile } from "../../_lib/auth";
 
 export const onRequestGet: PagesFunction<Env> = async (ctx) => {
   const url = new URL(ctx.request.url);
+  const appUrl = ctx.env.APP_URL ?? "https://sg-memory-game.pages.dev";
 
-  // Verify the OpenID assertion with Steam
-  const steamId = await verifyOpenId(url, ctx.env.APP_URL).catch(() => null);
+  try {
+    // Verify the OpenID assertion with Steam
+    const steamId = await verifyOpenId(url, appUrl).catch(() => null);
 
-  if (!steamId) {
-    return Response.redirect(`${ctx.env.APP_URL}/?auth=failed`, 302);
+    if (!steamId) {
+      return Response.redirect(`${appUrl}/?auth=failed`, 302);
+    }
+
+    // Fetch Steam profile (username + avatar)
+    const profile = await fetchSteamProfile(steamId, ctx.env.STEAM_API_KEY);
+
+    // Upsert user in D1
+    const now = Math.floor(Date.now() / 1000);
+    await ctx.env.DB.prepare(
+      `INSERT INTO users (steam_id, username, avatar_url, updated_at)
+       VALUES (?, ?, ?, ?)
+       ON CONFLICT(steam_id) DO UPDATE
+         SET username = excluded.username,
+             avatar_url = excluded.avatar_url,
+             updated_at = excluded.updated_at`
+    )
+      .bind(steamId, profile.username, profile.avatarUrl, now)
+      .run();
+
+    // Issue JWT session cookie (7 day expiry)
+    const token = await signJwt({ steamId }, ctx.env.JWT_SECRET);
+
+    return new Response(null, {
+      status: 302,
+      headers: {
+        Location: appUrl,
+        "Set-Cookie": [
+          `session=${token}`,
+          "HttpOnly",
+          "SameSite=Lax",
+          "Path=/",
+          `Max-Age=${7 * 24 * 60 * 60}`,
+          appUrl.startsWith("https") ? "Secure" : "",
+        ]
+          .filter(Boolean)
+          .join("; "),
+      },
+    });
+  } catch (err) {
+    console.error("Auth callback error:", err);
+    return Response.redirect(`${appUrl}/?auth=failed`, 302);
   }
-
-  // Fetch Steam profile (username + avatar)
-  const profile = await fetchSteamProfile(steamId, ctx.env.STEAM_API_KEY);
-
-  // Upsert user in D1
-  const now = Math.floor(Date.now() / 1000);
-  await ctx.env.DB.prepare(
-    `INSERT INTO users (steam_id, username, avatar_url, updated_at)
-     VALUES (?, ?, ?, ?)
-     ON CONFLICT(steam_id) DO UPDATE
-       SET username = excluded.username,
-           avatar_url = excluded.avatar_url,
-           updated_at = excluded.updated_at`
-  )
-    .bind(steamId, profile.username, profile.avatarUrl, now)
-    .run();
-
-  // Issue JWT session cookie (7 day expiry)
-  const token = await signJwt({ steamId }, ctx.env.JWT_SECRET);
-
-  return new Response(null, {
-    status: 302,
-    headers: {
-      Location: ctx.env.APP_URL,
-      "Set-Cookie": [
-        `session=${token}`,
-        "HttpOnly",
-        "SameSite=Lax",
-        "Path=/",
-        `Max-Age=${7 * 24 * 60 * 60}`,
-        ctx.env.APP_URL.startsWith("https") ? "Secure" : "",
-      ]
-        .filter(Boolean)
-        .join("; "),
-    },
-  });
 };
