@@ -12,12 +12,12 @@ export const onRequestPost: PagesFunction<Env> = async (ctx) => {
   const id = ctx.params["id"] as string;
   const body = await ctx.request.json<CompleteGameRequest>();
 
-  if (!body.timeMs || body.timeMs <= 0) {
-    return Response.json({ error: "timeMs must be positive" }, { status: 400 });
+  if (body.timeMs < 0) {
+    return Response.json({ error: "timeMs must be non-negative" }, { status: 400 });
   }
 
   const game = await ctx.env.DB.prepare(
-    "SELECT id, secret, pairs, mistakes, time_limit FROM games WHERE id = ?"
+    "SELECT id, secret, pairs, mistakes, time_limit, is_random FROM games WHERE id = ?"
   )
     .bind(id)
     .first<{
@@ -26,20 +26,23 @@ export const onRequestPost: PagesFunction<Env> = async (ctx) => {
       pairs: number;
       mistakes: number | null;
       time_limit: number | null;
+      is_random: number;
     }>();
 
   if (!game) {
     return Response.json({ error: "Game not found" }, { status: 404 });
   }
 
+  // Non-random games always submit timeMs=0 — skip time-based checks
+  const isRandom = game.is_random === 1;
+
   // Sanity check: submitted time must be plausible (at least 1 second per pair)
-  const minPlausibleMs = game.pairs * 1000;
-  if (body.timeMs < minPlausibleMs) {
+  if (isRandom && body.timeMs < game.pairs * 1000) {
     return Response.json({ error: "Implausible completion time" }, { status: 400 });
   }
 
-  // Time limit check (server-authoritative)
-  if (game.time_limit && body.timeMs / 1000 > game.time_limit) {
+  // Time limit check (server-authoritative, random games only)
+  if (isRandom && game.time_limit && body.timeMs / 1000 > game.time_limit) {
     return Response.json({ error: "Time limit exceeded" }, { status: 400 });
   }
 
