@@ -28,8 +28,9 @@ export const onRequestGet: PagesFunction<Env> = async (ctx) => {
     try {
       profile = await fetchSteamProfile(steamId, ctx.env.STEAM_API_KEY);
     } catch (e) {
+      const msg = encodeURIComponent(e instanceof Error ? e.message : String(e));
       console.error("fetchSteamProfile failed:", e);
-      return Response.redirect(`${appUrl}/?auth=failed&step=profile`, 302);
+      return Response.redirect(`${appUrl}/?auth=failed&step=profile&reason=${msg}`, 302);
     }
 
     // Upsert user in D1

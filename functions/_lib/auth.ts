@@ -126,6 +126,12 @@ export async function fetchSteamProfile(
 ): Promise<SteamProfile> {
   const url = `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${apiKey}&steamids=${steamId}`;
   const res = await fetch(url);
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => "(unreadable)");
+    throw new Error(`Steam API returned ${res.status}: ${body.slice(0, 200)}`);
+  }
+
   const data = (await res.json()) as {
     response: {
       players: Array<{ personaname: string; avatarfull: string }>;
@@ -133,7 +139,7 @@ export async function fetchSteamProfile(
   };
 
   const player = data.response.players[0];
-  if (!player) throw new Error("Steam profile not found");
+  if (!player) throw new Error(`Steam profile not found for steamId=${steamId} (players array empty)`);
 
   return {
     username: player.personaname,
