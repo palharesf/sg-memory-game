@@ -22,14 +22,8 @@ export default function Header() {
           </Link>
         )}
 
-        {/* Ad slot — top-right, reserved from day one */}
-        <div
-          className="hidden lg:block w-[160px] h-[30px] bg-[var(--color-bg-elevated)] rounded text-center text-xs text-[var(--color-text-muted)] leading-[30px]"
-          aria-label="Advertisement"
-          data-ad-slot="header"
-        >
-          {/* AdSense unit goes here */}
-        </div>
+        {/* Ad slot — reserved for future AdSense unit */}
+        <div className="hidden" data-ad-slot="header" />
 
         {!loading && (
           user ? (
