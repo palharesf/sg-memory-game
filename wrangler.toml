@@ -9,6 +9,4 @@ database_name = "sg-memory-game-db"
 database_id = "ff358b61-ad52-427f-a6b7-b874539ae34b"
 
 [vars]
-# Override these in Cloudflare dashboard for production
-STEAM_API_KEY = ""
 APP_URL = "https://sg-memory-game.pages.dev"
