@@ -16,6 +16,7 @@ function responseToConfig(r: GameConfigResponse): GameConfig {
     pairs: r.pairs,
     mistakes: r.mistakes,
     timeLimit: r.timeLimit,
+    isRandom: r.isRandom,
     creatorSteamId: r.creatorSteamId,
     createdAt: r.createdAt,
   };
@@ -47,9 +48,19 @@ export default function PlayPage() {
       .catch(() => setLoadError("Game not found or unavailable."));
   }, [id]);
 
-  // Submit win when status transitions to "won"
+  // Non-random wins: just fetch the secret, no score tracking
   useEffect(() => {
-    if (state.status !== "won" || !id) return;
+    if (state.status !== "won" || !id || config?.isRandom !== false) return;
+
+    api
+      .completeGame(id, { timeMs: 0 })
+      .then(({ secret: s }) => setSecret(s))
+      .catch(() => setSubmitError("Could not retrieve the secret."));
+  }, [state.status, id, config?.isRandom]);
+
+  // Submit win when status transitions to "won" (random games only)
+  useEffect(() => {
+    if (state.status !== "won" || !id || !config?.isRandom) return;
 
     api
       .completeGame(id, { timeMs: state.timeElapsed })
@@ -95,10 +106,12 @@ export default function PlayPage() {
       {/* Ad slot — above the board */}
       <AdSlot slot="play-top" className="w-full h-[60px]" />
 
-      {/* Status bar */}
-      <div className="w-full">
-        <StatusBar state={state} config={config} />
-      </div>
+      {/* Status bar — random games only */}
+      {config.isRandom && (
+        <div className="w-full">
+          <StatusBar state={state} config={config} />
+        </div>
+      )}
 
       {/* Board */}
       <Board cards={state.cards} pairs={config.pairs} onCardClick={flipCard} />
@@ -159,10 +172,12 @@ export default function PlayPage() {
       {/* Ad slot — below the board */}
       <AdSlot slot="play-bottom" className="w-full h-[90px]" />
 
-      {/* Leaderboard */}
-      <div className="w-full pt-2">
-        <Leaderboard gameId={config.id} refreshKey={leaderboardKey} />
-      </div>
+      {/* Leaderboard — random games only */}
+      {config.isRandom && (
+        <div className="w-full pt-2">
+          <Leaderboard gameId={config.id} refreshKey={leaderboardKey} />
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="w-full pt-4 pb-2 border-t border-[var(--color-border)] flex items-center justify-center">

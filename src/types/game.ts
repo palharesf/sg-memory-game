@@ -5,8 +5,9 @@
 export interface GameConfig {
   id: string;
   pairs: number;
-  mistakes: number | null; // null = unlimited
-  timeLimit: number | null; // seconds; null = no limit
+  mistakes: number | null; // null = unlimited; always null for non-random games
+  timeLimit: number | null; // seconds; null = no limit; always null for non-random games
+  isRandom: boolean;
   creatorSteamId: string | null;
   createdAt: number; // unix seconds
 }
@@ -52,8 +53,9 @@ export interface GameState {
 
 export interface CreateGameRequest {
   pairs: number;
-  mistakes: number | null; // null = unlimited
+  mistakes: number | null;
   timeLimit: number | null;
+  isRandom: boolean;
   secret: string;
 }
 
@@ -66,6 +68,7 @@ export interface GameConfigResponse {
   pairs: number;
   mistakes: number | null;
   timeLimit: number | null;
+  isRandom: boolean;
   creatorSteamId: string | null;
   creatorUsername: string | null;
   creatorAvatar: string | null;

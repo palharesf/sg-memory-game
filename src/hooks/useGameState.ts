@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { generateBoard } from "@/game/boardGenerator";
+import { generateBoard, generateFixedBoard } from "@/game/boardGenerator";
 import { shouldIgnoreClick, isMatch, isWon, isLost } from "@/game/rules";
 import { MISMATCH_DELAY_MS } from "@/game/constants";
 import type { GameState, GameConfig } from "@/types/game";
@@ -74,7 +74,9 @@ export function useGameState(config: GameConfig | null) {
     stopTimer();
     setState({
       ...initialState(),
-      cards: generateBoard(config.pairs),
+      cards: config.isRandom
+        ? generateBoard(config.pairs)
+        : generateFixedBoard(config.pairs, config.id),
       status: "idle",
     });
     console.debug("game initialized", { config });

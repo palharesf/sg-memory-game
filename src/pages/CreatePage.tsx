@@ -12,6 +12,7 @@ const DEFAULT_PAIRS = 8;
 export default function CreatePage() {
   const navigate = useNavigate();
 
+  const [isRandom, setIsRandom] = useState(true);
   const [pairs, setPairs] = useState(DEFAULT_PAIRS);
   // null = unlimited
   const [mistakes, setMistakes] = useState<number | "">(defaultMistakes(DEFAULT_PAIRS));
@@ -50,8 +51,9 @@ export default function CreatePage() {
     try {
       const { id } = await api.createGame({
         pairs,
-        mistakes: mistakesValue,
-        timeLimit: timeLimit === "" ? null : timeLimit,
+        isRandom,
+        mistakes: isRandom ? mistakesValue : null,
+        timeLimit: isRandom ? (timeLimit === "" ? null : timeLimit) : null,
         secret: secret.trim(),
       });
       navigate(`/play/${id}`);
@@ -79,6 +81,37 @@ export default function CreatePage() {
       <div className="border-t border-[var(--color-border)] pt-8 pb-10">
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Mode toggle */}
+        <div className="flex items-center justify-between p-3 rounded-lg bg-[var(--color-bg-elevated)] border border-[var(--color-border)]">
+          <div>
+            <p className="text-sm font-medium text-[var(--color-text)]">
+              {isRandom ? "Random board" : "Fixed board"}
+            </p>
+            <p className="text-xs text-[var(--color-text-muted)] mt-0.5">
+              {isRandom
+                ? "Card positions are reshuffled on every attempt."
+                : "Card positions never change. No time limit, no mistake limit, no leaderboard."}
+            </p>
+          </div>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={!isRandom}
+            onClick={() => setIsRandom((r) => !r)}
+            className={[
+              "relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors",
+              !isRandom ? "bg-[var(--color-warning)]" : "bg-[var(--color-bg-hover)]",
+            ].join(" ")}
+          >
+            <span
+              className={[
+                "pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transition-transform",
+                !isRandom ? "translate-x-5" : "translate-x-0",
+              ].join(" ")}
+            />
+          </button>
+        </div>
+
         {/* Pairs */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
@@ -108,7 +141,8 @@ export default function CreatePage() {
           </p>
         </div>
 
-        {/* Mistakes */}
+        {/* Mistakes + Time limit — random mode only */}
+        {isRandom && (<>{/* Mistakes */}
         <div className="space-y-2">
           <Label htmlFor="mistakes" className="text-[var(--color-text)]">
             Mistakes allowed{" "}
@@ -159,6 +193,7 @@ export default function CreatePage() {
             Leave empty for endless time (relaxed mode).
           </p>
         </div>
+        </>)}
 
         {/* Secret */}
         <div className="space-y-2">
