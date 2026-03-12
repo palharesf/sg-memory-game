@@ -14,27 +14,41 @@ export const onRequestGet: PagesFunction<Env> = async (ctx) => {
 
   try {
     // Verify the OpenID assertion with Steam
-    const steamId = await verifyOpenId(url, appUrl).catch(() => null);
+    const steamId = await verifyOpenId(url, appUrl).catch((e) => {
+      console.error("verifyOpenId failed:", e);
+      return null;
+    });
 
     if (!steamId) {
-      return Response.redirect(`${appUrl}/?auth=failed`, 302);
+      return Response.redirect(`${appUrl}/?auth=failed&step=verify`, 302);
     }
 
     // Fetch Steam profile (username + avatar)
-    const profile = await fetchSteamProfile(steamId, ctx.env.STEAM_API_KEY);
+    let profile;
+    try {
+      profile = await fetchSteamProfile(steamId, ctx.env.STEAM_API_KEY);
+    } catch (e) {
+      console.error("fetchSteamProfile failed:", e);
+      return Response.redirect(`${appUrl}/?auth=failed&step=profile`, 302);
+    }
 
     // Upsert user in D1
-    const now = Math.floor(Date.now() / 1000);
-    await ctx.env.DB.prepare(
-      `INSERT INTO users (steam_id, username, avatar_url, updated_at)
-       VALUES (?, ?, ?, ?)
-       ON CONFLICT(steam_id) DO UPDATE
-         SET username = excluded.username,
-             avatar_url = excluded.avatar_url,
-             updated_at = excluded.updated_at`
-    )
-      .bind(steamId, profile.username, profile.avatarUrl, now)
-      .run();
+    try {
+      const now = Math.floor(Date.now() / 1000);
+      await ctx.env.DB.prepare(
+        `INSERT INTO users (steam_id, username, avatar_url, updated_at)
+         VALUES (?, ?, ?, ?)
+         ON CONFLICT(steam_id) DO UPDATE
+           SET username = excluded.username,
+               avatar_url = excluded.avatar_url,
+               updated_at = excluded.updated_at`
+      )
+        .bind(steamId, profile.username, profile.avatarUrl, now)
+        .run();
+    } catch (e) {
+      console.error("DB upsert failed:", e);
+      return Response.redirect(`${appUrl}/?auth=failed&step=db`, 302);
+    }
 
     // Issue JWT session cookie (7 day expiry)
     const token = await signJwt({ steamId }, ctx.env.JWT_SECRET);
@@ -57,6 +71,6 @@ export const onRequestGet: PagesFunction<Env> = async (ctx) => {
     });
   } catch (err) {
     console.error("Auth callback error:", err);
-    return Response.redirect(`${appUrl}/?auth=failed`, 302);
+    return Response.redirect(`${appUrl}/?auth=failed&step=jwt`, 302);
   }
 };
