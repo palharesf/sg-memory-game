@@ -4,7 +4,8 @@
       "Bash(cd /c/Users/palha/documents/Github/sg-minesweeper && find . -type f | grep -E \"\\\\.\\(js|ts|json|css|html\\)$\" | head -30)",
       "Bash(npm run:*)",
       "Bash(npx shadcn@latest add input label --yes 2>&1)",
-      "Bash(sleep 2 && curl -s http://localhost:5173 | head -5)"
+      "Bash(sleep 2 && curl -s http://localhost:5173 | head -5)",
+      "Bash(npm install:*)"
     ]
   }
 }

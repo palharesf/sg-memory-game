@@ -10,6 +10,5 @@ database_id = "ff358b61-ad52-427f-a6b7-b874539ae34b"
 
 [vars]
 # Override these in Cloudflare dashboard for production
-JWT_SECRET = "dev-secret-min-32-chars-change-me!!"
 STEAM_API_KEY = ""
-APP_URL = "http://localhost:5173"
+APP_URL = "https://sg-memory-game.pages.dev"

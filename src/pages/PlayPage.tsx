@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useGameState } from "@/hooks/useGameState";
 import { api } from "@/services/api";
@@ -32,7 +32,10 @@ export default function PlayPage() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [leaderboardKey, setLeaderboardKey] = useState(0);
 
-  const config = configResponse ? responseToConfig(configResponse) : null;
+  const config = useMemo(
+    () => (configResponse ? responseToConfig(configResponse) : null),
+    [configResponse]
+  );
   const { state, flipCard, resetGame } = useGameState(config);
 
   // Fetch game config on mount
