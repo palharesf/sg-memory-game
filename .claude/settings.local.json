@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd /c/Users/palha/documents/Github/sg-minesweeper && find . -type f | grep -E \"\\\\.\\(js|ts|json|css|html\\)$\" | head -30)"
+    ]
+  }
+}

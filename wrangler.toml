@@ -1,0 +1,15 @@
+name = "sg-memory-game"
+compatibility_date = "2024-11-01"
+pages_build_output_dir = "./dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "sg-memory-game-db"
+# database_id is populated after running: wrangler d1 create sg-memory-game-db
+database_id = "placeholder-replace-after-d1-create"
+
+[vars]
+# Override these in Cloudflare dashboard for production
+JWT_SECRET = "dev-secret-min-32-chars-change-me!!"
+STEAM_API_KEY = ""
+APP_URL = "http://localhost:5173"
