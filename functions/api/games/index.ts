@@ -39,10 +39,12 @@ export const onRequestPost: PagesFunction<Env> = async (ctx) => {
   const mistakes = isRandom ? (body.mistakes ?? null) : null;
   const timeLimit = isRandom ? (body.timeLimit ?? null) : null;
 
+  const theme = body.theme === "donated" ? "donated" : "generic";
+
   await ctx.env.DB.prepare(
-    "INSERT INTO games (id, pairs, mistakes, time_limit, is_random, secret, creator_steam_id) VALUES (?, ?, ?, ?, ?, ?, ?)"
+    "INSERT INTO games (id, pairs, mistakes, time_limit, is_random, theme, secret, creator_steam_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
   )
-    .bind(id, body.pairs, mistakes, timeLimit, isRandom ? 1 : 0, body.secret.trim(), creatorSteamId)
+    .bind(id, body.pairs, mistakes, timeLimit, isRandom ? 1 : 0, theme, body.secret.trim(), creatorSteamId)
     .run();
 
   // Track games created if user is logged in

@@ -7,7 +7,11 @@
       "Bash(sleep 2 && curl -s http://localhost:5173 | head -5)",
       "Bash(npm install:*)",
       "Bash(cd \"C:\\\\Users\\\\palha\\\\Documents\\\\GitHub\\\\sg-memory-game\" && gh run list --limit 3 2>&1)",
-      "Bash(cd \"C:\\\\Users\\\\palha\\\\Documents\\\\GitHub\\\\sg-memory-game\" && npx wrangler pages secret list --project-name sg-memory-game 2>&1)"
+      "Bash(cd \"C:\\\\Users\\\\palha\\\\Documents\\\\GitHub\\\\sg-memory-game\" && npx wrangler pages secret list --project-name sg-memory-game 2>&1)",
+      "WebFetch(domain:www.steamgifts.com)",
+      "WebFetch(domain:pastebin.com)",
+      "Bash(curl -s \"https://pastebin.com/raw/9hnBD1UT\")",
+      "Bash(cd \"C:\\\\Users\\\\palha\\\\Documents\\\\GitHub\\\\sg-memory-game\" && npx wrangler d1 migrations apply sg-memory-game --remote 2>&1)"
     ]
   }
 }

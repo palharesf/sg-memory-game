@@ -56,6 +56,10 @@ export const api = {
   getLeaderboard: (id: string) =>
     request<LeaderboardEntry[]>(`/games/${id}/leaderboard`),
 
+  /** Return the secret if the authenticated user has already won this game */
+  getPreviousSecret: (id: string) =>
+    request<{ secret: string }>(`/games/${id}/secret`),
+
   /** Current authenticated user (null if not logged in) */
   getMe: () =>
     request<CurrentUser | null>("/auth/me").catch(() => null),

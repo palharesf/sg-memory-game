@@ -2,12 +2,15 @@
 // Game configuration — stored in D1, encoded in the URL as a short ID
 // ---------------------------------------------------------------------------
 
+export type GameTheme = 'generic' | 'donated';
+
 export interface GameConfig {
   id: string;
   pairs: number;
   mistakes: number | null; // null = unlimited; always null for non-random games
   timeLimit: number | null; // seconds; null = no limit; always null for non-random games
   isRandom: boolean;
+  theme: GameTheme;
   creatorSteamId: string | null;
   createdAt: number; // unix seconds
 }
@@ -56,6 +59,7 @@ export interface CreateGameRequest {
   mistakes: number | null;
   timeLimit: number | null;
   isRandom: boolean;
+  theme: GameTheme;
   secret: string;
 }
 
@@ -69,6 +73,7 @@ export interface GameConfigResponse {
   mistakes: number | null;
   timeLimit: number | null;
   isRandom: boolean;
+  theme: GameTheme;
   creatorSteamId: string | null;
   creatorUsername: string | null;
   creatorAvatar: string | null;

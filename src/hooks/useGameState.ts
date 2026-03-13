@@ -83,8 +83,8 @@ export function useGameState(config: GameConfig | null) {
     setState({
       ...initialState(),
       cards: config.isRandom
-        ? generateBoard(config.pairs)
-        : generateFixedBoard(config.pairs, config.id),
+        ? generateBoard(config.pairs, config.theme)
+        : generateFixedBoard(config.pairs, config.id, config.theme),
       status: "idle",
     });
   }, [config, stopTimer]);

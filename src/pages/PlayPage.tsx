@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useGameState } from "@/hooks/useGameState";
+import { useAuth } from "@/context/AuthContext";
 import { api } from "@/services/api";
 import Board from "@/components/game/Board";
 import StatusBar from "@/components/game/StatusBar";
@@ -17,6 +18,7 @@ function responseToConfig(r: GameConfigResponse): GameConfig {
     mistakes: r.mistakes,
     timeLimit: r.timeLimit,
     isRandom: r.isRandom,
+    theme: r.theme,
     creatorSteamId: r.creatorSteamId,
     createdAt: r.createdAt,
   };
@@ -24,14 +26,19 @@ function responseToConfig(r: GameConfigResponse): GameConfig {
 
 export default function PlayPage() {
   const { id } = useParams<{ id: string }>();
+  const { user } = useAuth();
   const [configResponse, setConfigResponse] = useState<GameConfigResponse | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
 
-  // Win-state — secret + record
+  // Win-state — secret + record (current session)
   const [secret, setSecret] = useState<string | null>(null);
   const [isNewRecord, setIsNewRecord] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [leaderboardKey, setLeaderboardKey] = useState(0);
+
+  // Previous-win reveal — shown when a logged-in user revisits a game they already won
+  const [previousSecret, setPreviousSecret] = useState<string | null>(null);
+  const [previousSecretDismissed, setPreviousSecretDismissed] = useState(false);
 
   const config = useMemo(
     () => (configResponse ? responseToConfig(configResponse) : null),
@@ -81,6 +88,17 @@ export default function PlayPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.status, id, config?.isRandom]);
 
+  // Auto-reveal secret if the logged-in user has already won this game.
+  // Fires once config is loaded (ensures game exists) and user is known.
+  useEffect(() => {
+    if (!id || !user || !config) return;
+    api
+      .getPreviousSecret(id)
+      .then(({ secret: s }) => setPreviousSecret(s))
+      .catch(() => {}); // 401 = not logged in, 403 = not won yet — both silent
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, user?.steamId, config?.id]);
+
   // -------------------------------------------------------------------------
 
   if (loadError) {
@@ -110,6 +128,28 @@ export default function PlayPage() {
           Created by{" "}
           <span className="text-[var(--color-text)]">{configResponse.creatorUsername}</span>
         </p>
+      )}
+
+      {/* Previous-win banner — shown when a returning winner revisits */}
+      {previousSecret && !previousSecretDismissed && (
+        <div className="w-full rounded-lg border border-[var(--color-primary)]/30 bg-[var(--color-primary)]/10 px-4 py-4 space-y-2">
+          <div className="flex items-start justify-between gap-3">
+            <p className="text-sm font-medium text-[var(--color-text-bright)]">
+              You've already solved this one!
+            </p>
+            <button
+              onClick={() => setPreviousSecretDismissed(true)}
+              aria-label="Dismiss"
+              className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors shrink-0"
+            >
+              ✕
+            </button>
+          </div>
+          <p className="text-xs text-[var(--color-text-muted)]">Your secret:</p>
+          <p className="font-mono text-[var(--color-text-bright)] break-all bg-[var(--color-bg-elevated)] rounded px-3 py-2 select-all text-sm">
+            {previousSecret}
+          </p>
+        </div>
       )}
 
       {/* Ad slot — above the board */}

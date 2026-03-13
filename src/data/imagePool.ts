@@ -282,3 +282,12 @@ export const POOL: PoolImage[] = [
 
 /** Total number of images available in the pool */
 export const POOL_SIZE = POOL.length;
+
+/**
+ * Community-donated art pool — locked until enough art is collected.
+ * To add images: drop 512×512 transparent PNGs into public/images/donated/
+ * and add entries here following the same img() pattern.
+ */
+export const DONATED_POOL: PoolImage[] = [];
+
+export const DONATED_POOL_SIZE = DONATED_POOL.length;
