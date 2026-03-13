@@ -172,7 +172,9 @@ function wonGameRow(entry: HistoryEntry) {
       <td className="px-4 py-3 text-[var(--color-text)]">
         {entry.bestTimeMs
           ? formatTime(entry.bestTimeMs)
-          : <span className="text-[var(--color-text-muted)]">—</span>}
+          : entry.bestTimeMs === 0
+            ? <span className="text-[var(--color-text-muted)]">Fixed board</span>
+            : <span className="text-[var(--color-text-muted)]">—</span>}
       </td>
       <td className="px-4 py-3 text-[var(--color-text-muted)]">
         {entry.wonAt ? formatDate(entry.wonAt) : "—"}
