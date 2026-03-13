@@ -1,11 +1,24 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import CreatePage from "@/pages/CreatePage";
-import PlayPage from "@/pages/PlayPage";
-import HistoryPage from "@/pages/HistoryPage";
-import NotFoundPage from "@/pages/NotFoundPage";
 import Header from "@/components/Header";
 import { AuthProvider } from "@/context/AuthContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
+
+// CreatePage is the home/landing page — keep eager so it's instant.
+// All other routes are lazy-loaded: players typically land directly on /play/:id
+// from a giveaway link, so deferring the other pages saves parse time.
+import CreatePage from "@/pages/CreatePage";
+const PlayPage = lazy(() => import("@/pages/PlayPage"));
+const HistoryPage = lazy(() => import("@/pages/HistoryPage"));
+const NotFoundPage = lazy(() => import("@/pages/NotFoundPage"));
+
+function PageLoader() {
+  return (
+    <div className="flex items-center justify-center py-24">
+      <p className="text-[var(--color-text-muted)] animate-pulse">Loading…</p>
+    </div>
+  );
+}
 
 export default function App() {
   return (
@@ -15,12 +28,14 @@ export default function App() {
         <Header />
         <main className="flex-1">
           <ErrorBoundary>
+          <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/" element={<CreatePage />} />
             <Route path="/play/:id" element={<PlayPage />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
+          </Suspense>
           </ErrorBoundary>
         </main>
       </div>

@@ -9,10 +9,10 @@ export default function Header() {
     <header className="h-14 flex items-center px-4 border-b border-[var(--color-border)] bg-[var(--color-bg-surface)]">
       <Link to="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
         <img src="/logo.png" alt="SG Memory Game" className="w-9 h-9 rounded-md" />
-        <span className="font-semibold text-[var(--color-text-bright)]">SG Memory Game</span>
+        <span className="hidden sm:inline font-semibold text-[var(--color-text-bright)]">SG Memory Game</span>
       </Link>
 
-      <nav aria-label="Main navigation" className="ml-auto flex items-center gap-4">
+      <nav aria-label="Main navigation" className="ml-auto flex items-center gap-2 sm:gap-4">
         {user && (
           <Link
             to="/history"
@@ -33,7 +33,7 @@ export default function Header() {
                 alt={user.username}
                 className="w-8 h-8 rounded-full"
               />
-              <span className="text-sm text-[var(--color-text)]">{user.username}</span>
+              <span className="hidden sm:inline text-sm text-[var(--color-text)]">{user.username}</span>
               <button
                 onClick={logout}
                 className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors focus-visible:outline-2 focus-visible:outline-[var(--color-border-focus)] focus-visible:outline-offset-2 rounded"

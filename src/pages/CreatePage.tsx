@@ -88,7 +88,7 @@ export default function CreatePage() {
       )}
 
       {/* Hero */}
-      <div className="flex flex-col items-center text-center py-10 pb-8">
+      <div className="flex flex-col items-center text-center pt-6 pb-6 sm:pt-10 sm:pb-8">
         <img src="/logo.png" alt="SG Memory Game" className="w-24 h-24 rounded-2xl mb-4 shadow-lg" />
         <h1 className="text-3xl font-bold text-[var(--color-text-bright)] mb-2">SG Memory Game</h1>
         <p className="text-[var(--color-text-muted)] max-w-sm">
@@ -123,7 +123,7 @@ export default function CreatePage() {
           >
             <span
               className={[
-                "pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transition-transform",
+                "pointer-events-none inline-block h-5 w-5 rounded-full bg-[var(--color-text-bright)] shadow transition-transform",
                 !isRandom ? "translate-x-5" : "translate-x-0",
               ].join(" ")}
             />
@@ -155,7 +155,7 @@ export default function CreatePage() {
             </span>
           </div>
           <p className="text-xs text-[var(--color-text-muted)]">
-            More pairs = harder game, longer to solve.
+            More pairs means a harder, longer game.
           </p>
         </div>
 
@@ -183,7 +183,7 @@ export default function CreatePage() {
             </span>
           </div>
           <p className="text-xs text-[var(--color-text-muted)]">
-            Leave empty for unlimited mistakes (relaxed mode).
+            Leave empty for no mistake limit.
           </p>
         </div>
 
@@ -208,7 +208,7 @@ export default function CreatePage() {
             <span className="text-sm text-[var(--color-text-muted)]">seconds</span>
           </div>
           <p className="text-xs text-[var(--color-text-muted)]">
-            Leave empty for endless time (relaxed mode).
+            Leave empty for no time limit.
           </p>
         </div>
         </>)}
@@ -228,7 +228,7 @@ export default function CreatePage() {
             autoComplete="off"
           />
           <p className="text-xs text-[var(--color-text-muted)]">
-            Shown to players only after they win. Stored securely server-side.
+            Only shown to players after they win — never visible before.
           </p>
         </div>
 

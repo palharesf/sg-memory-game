@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 import Card from "./Card";
 import { getGridDimensions } from "@/game/constants";
 import type { Card as CardType } from "@/types/game";
@@ -14,7 +14,8 @@ interface BoardProps {
  * Card size is calculated dynamically so the grid always fits the viewport.
  * Uses CSS custom property --card-size to drive both card dimensions and gap.
  */
-export default function Board({ cards, pairs, onCardClick }: BoardProps) {
+// memo: prevents re-renders on every timer tick — cards only change on flip/match
+const Board = memo(function Board({ cards, pairs, onCardClick }: BoardProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const { rows, cols } = getGridDimensions(pairs);
 
@@ -24,7 +25,10 @@ export default function Board({ cards, pairs, onCardClick }: BoardProps) {
       if (!el) return;
 
       const maxW = el.clientWidth;
-      const maxH = window.innerHeight * 0.65; // leave room for status bar
+      // In compact landscape (e.g. phone rotated), viewport height is short so
+      // use a smaller fraction to keep the board + header + status bar on screen.
+      const compactLandscape = window.innerWidth > window.innerHeight && window.innerHeight < 500;
+      const maxH = window.innerHeight * (compactLandscape ? 0.52 : 0.65);
 
       const gap = 8;
       const sizeByWidth = Math.floor((maxW - gap * (cols - 1)) / cols);
@@ -34,9 +38,19 @@ export default function Board({ cards, pairs, onCardClick }: BoardProps) {
       el.style.setProperty("--card-size", `${Math.max(size, 44)}px`); // mobile min 44px
     }
 
+    // Debounce resize to avoid layout thrashing on every pixel during window drag.
+    let debounceTimer: ReturnType<typeof setTimeout>;
+    function handleResize() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(recalcSize, 100);
+    }
+
     recalcSize();
-    window.addEventListener("resize", recalcSize);
-    return () => window.removeEventListener("resize", recalcSize);
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(debounceTimer);
+    };
   }, [rows, cols]);
 
   return (
@@ -56,4 +70,6 @@ export default function Board({ cards, pairs, onCardClick }: BoardProps) {
       </div>
     </div>
   );
-}
+});
+
+export default Board;

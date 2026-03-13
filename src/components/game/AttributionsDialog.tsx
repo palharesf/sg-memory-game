@@ -36,7 +36,7 @@ export default function AttributionsDialog() {
           onClick={() => setOpen(false)}
         >
           {/* Backdrop */}
-          <div className="absolute inset-0 bg-black/60" aria-hidden="true" />
+          <div className="absolute inset-0 bg-[var(--color-bg-base)]/80" aria-hidden="true" />
 
           {/* Panel */}
           <div

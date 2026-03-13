@@ -257,7 +257,7 @@ export default function HistoryPage() {
       <Section<CreatedGame>
         title="Games Created"
         fetchPage={(p) => api.getMyGames(p)}
-        columns={["Game", "Config", "Limits", "Created"]}
+        columns={["Game", "Board", "Limits", "Created"]}
         renderRow={createdGameRow}
       />
 

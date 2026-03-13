@@ -20,6 +20,8 @@ export function useGameState(config: GameConfig | null) {
   // Timer via requestAnimationFrame
   const startTimeRef = useRef<number | null>(null);
   const rafRef = useRef<number | null>(null);
+  // Throttle state updates to every 100ms — the timer display doesn't need 60fps
+  const lastTickRef = useRef<number>(0);
 
   const stopTimer = useCallback(() => {
     if (rafRef.current !== null) {
@@ -32,17 +34,23 @@ export function useGameState(config: GameConfig | null) {
   const tick = useCallback(
     (now: number) => {
       if (startTimeRef.current === null) return;
-      const elapsed = now - startTimeRef.current;
 
-      setState((prev) => {
-        if (prev.status !== "playing") return prev;
+      // Only push state updates every ~100ms to avoid re-rendering 60×/sec.
+      // The RAF still runs every frame so time-limit detection stays accurate.
+      if (now - lastTickRef.current >= 100) {
+        lastTickRef.current = now;
+        const elapsed = now - startTimeRef.current;
 
-        if (config?.timeLimit && elapsed / 1000 >= config.timeLimit) {
-          return { ...prev, timeElapsed: config.timeLimit * 1000, status: "lost" };
-        }
+        setState((prev) => {
+          if (prev.status !== "playing") return prev;
 
-        return { ...prev, timeElapsed: elapsed };
-      });
+          if (config?.timeLimit && elapsed / 1000 >= config.timeLimit) {
+            return { ...prev, timeElapsed: config.timeLimit * 1000, status: "lost" };
+          }
+
+          return { ...prev, timeElapsed: elapsed };
+        });
+      }
 
       rafRef.current = requestAnimationFrame(tick);
     },
@@ -79,7 +87,6 @@ export function useGameState(config: GameConfig | null) {
         : generateFixedBoard(config.pairs, config.id),
       status: "idle",
     });
-    console.debug("game initialized", { config });
   }, [config, stopTimer]);
 
   useEffect(() => {

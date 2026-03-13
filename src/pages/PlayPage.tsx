@@ -75,7 +75,7 @@ export default function PlayPage() {
         setLeaderboardKey((k) => k + 1);
       })
       .catch(() => {
-        if (!cancelled) setSubmitError("Could not save your time. The secret is shown below anyway.");
+        if (!cancelled) setSubmitError("Couldn't save your time, but here's your secret anyway.");
       });
     return () => { cancelled = true; };
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -86,7 +86,7 @@ export default function PlayPage() {
   if (loadError) {
     return (
       <div className="max-w-lg mx-auto px-4 py-24 text-center">
-        <p className="text-[var(--color-danger)] mb-4">{loadError}</p>
+        <p className="text-[var(--color-danger)] mb-4">This game doesn't exist or isn't available anymore.</p>
         <a href="/" className="text-[var(--color-primary)] hover:underline">
           Back to home
         </a>
@@ -103,7 +103,7 @@ export default function PlayPage() {
   }
 
   return (
-    <div className="flex flex-col items-center px-3 py-4 gap-4 max-w-2xl mx-auto w-full">
+    <div className="flex flex-col items-center px-3 py-3 sm:py-4 gap-3 sm:gap-4 max-w-2xl mx-auto w-full">
       {/* Creator attribution */}
       {configResponse?.creatorUsername && (
         <p className="text-xs text-[var(--color-text-muted)] self-start">
