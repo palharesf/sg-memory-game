@@ -18,9 +18,14 @@ export default function Card({ card, onClick }: CardProps) {
     <button
       onClick={() => onClick(card.id)}
       disabled={isMatched}
-      aria-label={isRevealed ? `Card: ${card.image}` : "Hidden card"}
+      aria-label={
+        isMatched ? `Card ${card.id + 1}, matched` :
+        isRevealed ? `Card ${card.id + 1}, face up` :
+        `Card ${card.id + 1}, hidden`
+      }
+      aria-pressed={isRevealed}
       className={[
-        "card-root",
+        "card-root focus-visible:outline-2 focus-visible:outline-[var(--color-border-focus)] focus-visible:outline-offset-2",
         isRevealed ? "is-revealed" : "",
         isMatched ? "is-matched" : "",
       ]

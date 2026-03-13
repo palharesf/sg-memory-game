@@ -58,19 +58,28 @@ export default function PlayPage() {
       .catch(() => setSubmitError("Could not retrieve the secret."));
   }, [state.status, id, config?.isRandom]);
 
-  // Submit win when status transitions to "won" (random games only)
+  // Submit win when status transitions to "won" (random games only).
+  // state.timeElapsed is intentionally omitted from deps — the timer stops
+  // when status becomes "won", so the value is stable at that point.
+  // Including it would risk a duplicate submission if anything caused a re-render.
   useEffect(() => {
     if (state.status !== "won" || !id || !config?.isRandom) return;
 
+    let cancelled = false;
     api
       .completeGame(id, { timeMs: state.timeElapsed })
       .then(({ secret: s, isNewRecord: nr }) => {
+        if (cancelled) return;
         setSecret(s);
         setIsNewRecord(nr);
         setLeaderboardKey((k) => k + 1);
       })
-      .catch(() => setSubmitError("Could not save your time. The secret is shown below anyway."));
-  }, [state.status, id, state.timeElapsed]);
+      .catch(() => {
+        if (!cancelled) setSubmitError("Could not save your time. The secret is shown below anyway.");
+      });
+    return () => { cancelled = true; };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.status, id, config?.isRandom]);
 
   // -------------------------------------------------------------------------
 

@@ -5,7 +5,9 @@
       "Bash(npm run:*)",
       "Bash(npx shadcn@latest add input label --yes 2>&1)",
       "Bash(sleep 2 && curl -s http://localhost:5173 | head -5)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(cd \"C:\\\\Users\\\\palha\\\\Documents\\\\GitHub\\\\sg-memory-game\" && gh run list --limit 3 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\palha\\\\Documents\\\\GitHub\\\\sg-memory-game\" && npx wrangler pages secret list --project-name sg-memory-game 2>&1)"
     ]
   }
 }

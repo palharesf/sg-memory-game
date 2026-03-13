@@ -27,6 +27,7 @@ interface SectionProps<T> {
 }
 
 function Section<T>({ title, fetchPage, renderRow, columns }: SectionProps<T>) {
+  const contentId = `section-${title.toLowerCase().replace(/\s+/g, "-")}`;
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<T[]>([]);
   const [total, setTotal] = useState(0);
@@ -64,7 +65,9 @@ function Section<T>({ title, fetchPage, renderRow, columns }: SectionProps<T>) {
       {/* Header / toggle */}
       <button
         onClick={toggle}
-        className="w-full flex items-center justify-between px-4 py-3 bg-[var(--color-bg-elevated)] hover:bg-[var(--color-bg-surface)] transition-colors text-left"
+        aria-expanded={open}
+        aria-controls={contentId}
+        className="w-full flex items-center justify-between px-4 py-3 bg-[var(--color-bg-elevated)] hover:bg-[var(--color-bg-surface)] transition-colors text-left focus-visible:outline-2 focus-visible:outline-[var(--color-border-focus)] focus-visible:outline-offset-[-2px]"
       >
         <span className="font-medium text-[var(--color-text-bright)]">{title}</span>
         <div className="flex items-center gap-2">
@@ -74,6 +77,7 @@ function Section<T>({ title, fetchPage, renderRow, columns }: SectionProps<T>) {
             </span>
           )}
           <svg
+            aria-hidden="true"
             className={`w-4 h-4 text-[var(--color-text-muted)] transition-transform ${open ? "rotate-180" : ""}`}
             fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
           >
@@ -84,7 +88,7 @@ function Section<T>({ title, fetchPage, renderRow, columns }: SectionProps<T>) {
 
       {/* Content */}
       {open && (
-        <div>
+        <div id={contentId}>
           {loading && (
             <p className="px-4 py-6 text-sm text-[var(--color-text-muted)] animate-pulse">Loading…</p>
           )}
@@ -96,12 +100,14 @@ function Section<T>({ title, fetchPage, renderRow, columns }: SectionProps<T>) {
           )}
           {!loading && items.length > 0 && (
             <>
+              <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-[var(--color-border)]">
                     {columns.map((col) => (
                       <th
                         key={col}
+                        scope="col"
                         className="text-left px-4 py-2.5 font-medium text-[var(--color-text-muted)]"
                       >
                         {col}
@@ -123,6 +129,7 @@ function Section<T>({ title, fetchPage, renderRow, columns }: SectionProps<T>) {
                   ))}
                 </tbody>
               </table>
+              </div>
 
               {/* Pagination — only shown when total exceeds one page */}
               {totalPages > 1 && (

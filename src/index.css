@@ -26,7 +26,7 @@
   --color-danger: #c85050;
   --color-warning: #d89e4f;
 
-  --font-family-sans: "Inter", system-ui, sans-serif;
+  /* --font-family-sans removed: Geist Variable is the sole font via @theme inline */
 }
 
 /* Base */
@@ -41,7 +41,6 @@ html, body, #root {
 body {
   background-color: var(--color-bg-base);
   color: var(--color-text);
-  font-family: var(--font-family-sans);
   margin: 0;
   -webkit-font-smoothing: antialiased;
 }
@@ -159,7 +158,10 @@ body {
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
+    /* Remove the default outline-ring/50 — focus rings are applied
+       per-component using focus-visible:outline utilities instead */
+    outline: none;
   }
   body {
     @apply bg-background text-foreground;
@@ -249,4 +251,16 @@ body {
 /* Matched cards get a subtle success tint */
 .card-root.is-matched .card-inner {
   box-shadow: 0 0 0 2px var(--color-success);
+}
+
+/* Respect reduced-motion preference — disable card flip and all transitions */
+@media (prefers-reduced-motion: reduce) {
+  .card-inner {
+    transition: none;
+  }
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

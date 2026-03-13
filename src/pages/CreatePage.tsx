@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "@/services/api";
 import { MIN_PAIRS, MAX_PAIRS, defaultMistakes, minMistakes } from "@/game/constants";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,8 @@ const DEFAULT_PAIRS = 8;
 
 export default function CreatePage() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const authFailed = searchParams.get("auth") === "failed";
 
   const [isRandom, setIsRandom] = useState(true);
   const [pairs, setPairs] = useState(DEFAULT_PAIRS);
@@ -69,6 +71,22 @@ export default function CreatePage() {
 
   return (
     <div className="max-w-xl mx-auto px-4">
+      {/* Auth failure notice */}
+      {authFailed && (
+        <div className="mt-4 flex items-start justify-between gap-3 rounded border border-[var(--color-danger)]/30 bg-[var(--color-danger)]/10 px-4 py-3 text-sm">
+          <p className="text-[var(--color-danger)]">
+            Steam sign-in failed. Please try again.
+          </p>
+          <button
+            onClick={() => setSearchParams({})}
+            aria-label="Dismiss"
+            className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors shrink-0"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       {/* Hero */}
       <div className="flex flex-col items-center text-center py-10 pb-8">
         <img src="/logo.png" alt="SG Memory Game" className="w-24 h-24 rounded-2xl mb-4 shadow-lg" />

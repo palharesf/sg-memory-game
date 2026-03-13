@@ -12,11 +12,11 @@ export default function Header() {
         <span className="font-semibold text-[var(--color-text-bright)]">SG Memory Game</span>
       </Link>
 
-      <nav className="ml-auto flex items-center gap-4">
+      <nav aria-label="Main navigation" className="ml-auto flex items-center gap-4">
         {user && (
           <Link
             to="/history"
-            className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+            className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors focus-visible:outline-2 focus-visible:outline-[var(--color-border-focus)] focus-visible:outline-offset-2 rounded"
           >
             My Games
           </Link>
@@ -36,7 +36,7 @@ export default function Header() {
               <span className="text-sm text-[var(--color-text)]">{user.username}</span>
               <button
                 onClick={logout}
-                className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+                className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors focus-visible:outline-2 focus-visible:outline-[var(--color-border-focus)] focus-visible:outline-offset-2 rounded"
               >
                 Sign out
               </button>
