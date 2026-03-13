@@ -6,6 +6,8 @@ import type {
   CompleteGameResponse,
   LeaderboardEntry,
   HistoryEntry,
+  CreatedGame,
+  PaginatedResult,
   CurrentUser,
 } from "@/types/game";
 
@@ -58,9 +60,13 @@ export const api = {
   getMe: () =>
     request<CurrentUser | null>("/auth/me").catch(() => null),
 
-  /** Player's game history (requires auth) */
-  getHistory: () =>
-    request<HistoryEntry[]>("/history"),
+  /** Player's won games, paginated (requires auth) */
+  getHistory: (page = 1) =>
+    request<PaginatedResult<HistoryEntry>>(`/history?page=${page}`),
+
+  /** Games created by the player, paginated (requires auth) */
+  getMyGames: (page = 1) =>
+    request<PaginatedResult<CreatedGame>>(`/my-games?page=${page}`),
 
   /** Redirect URL to start Steam OpenID flow */
   steamLoginUrl: () => `${BASE}/auth/steam`,

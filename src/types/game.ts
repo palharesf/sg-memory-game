@@ -101,6 +101,20 @@ export interface HistoryEntry {
   wonAt: number | null;
 }
 
+export interface CreatedGame {
+  id: string;
+  pairs: number;
+  mistakes: number | null;
+  timeLimit: number | null;
+  isRandom: boolean;
+  createdAt: number;
+}
+
+export interface PaginatedResult<T> {
+  items: T[];
+  total: number;
+}
+
 // ---------------------------------------------------------------------------
 // Auth
 // ---------------------------------------------------------------------------
