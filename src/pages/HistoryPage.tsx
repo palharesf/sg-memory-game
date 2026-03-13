@@ -25,7 +25,7 @@ export default function HistoryPage() {
     api
       .getHistory()
       .then(setEntries)
-      .catch(() => setError("Could not load history."))
+      .catch((e: unknown) => setError(e instanceof Error ? e.message : "Could not load history."))
       .finally(() => setLoading(false));
   }, [user]);
 
