@@ -16,7 +16,9 @@ export default function StatusBar({ state, config }: StatusBarProps) {
     <div className="flex items-center justify-between px-2 py-2 text-sm">
       {/* Mistakes */}
       <div className="flex items-center gap-1.5">
-        <span className="text-[var(--color-text-muted)]">Mistakes:</span>
+        <span className="text-[var(--color-text-muted)]">
+          {unlimited ? "Mistakes:" : "Left:"}
+        </span>
         <span
           className={[
             "font-semibold font-mono",
@@ -27,7 +29,7 @@ export default function StatusBar({ state, config }: StatusBarProps) {
               : "text-[var(--color-text-bright)]",
           ].join(" ")}
         >
-          {state.mistakesMade}{unlimited ? "" : `/${config.mistakes}`}
+          {unlimited ? state.mistakesMade : mistakesLeft}
         </span>
       </div>
 

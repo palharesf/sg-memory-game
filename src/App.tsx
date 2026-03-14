@@ -10,6 +10,7 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import CreatePage from "@/pages/CreatePage";
 const PlayPage = lazy(() => import("@/pages/PlayPage"));
 const HistoryPage = lazy(() => import("@/pages/HistoryPage"));
+const PrivacyPage = lazy(() => import("@/pages/PrivacyPage"));
 const NotFoundPage = lazy(() => import("@/pages/NotFoundPage"));
 
 function PageLoader() {
@@ -33,6 +34,7 @@ export default function App() {
             <Route path="/" element={<CreatePage />} />
             <Route path="/play/:id" element={<PlayPage />} />
             <Route path="/history" element={<HistoryPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
           </Suspense>

@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import { useGameState } from "@/hooks/useGameState";
 import { useAuth } from "@/context/AuthContext";
 import { api } from "@/services/api";
@@ -39,6 +39,10 @@ export default function PlayPage() {
   // Previous-win reveal — shown when a logged-in user revisits a game they already won
   const [previousSecret, setPreviousSecret] = useState<string | null>(null);
   const [previousSecretDismissed, setPreviousSecretDismissed] = useState(false);
+
+  // Copy link state
+  const [copied, setCopied] = useState(false);
+  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const config = useMemo(
     () => (configResponse ? responseToConfig(configResponse) : null),
@@ -99,6 +103,14 @@ export default function PlayPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, user?.steamId, config?.id]);
 
+  function handleCopyLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      setCopied(true);
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+      copyTimerRef.current = setTimeout(() => setCopied(false), 2000);
+    });
+  }
+
   // -------------------------------------------------------------------------
 
   if (loadError) {
@@ -122,13 +134,35 @@ export default function PlayPage() {
 
   return (
     <div className="flex flex-col items-center px-3 py-3 sm:py-4 gap-3 sm:gap-4 max-w-2xl mx-auto w-full">
-      {/* Creator attribution */}
-      {configResponse?.creatorUsername && (
-        <p className="text-xs text-[var(--color-text-muted)] self-start">
-          Created by{" "}
-          <span className="text-[var(--color-text)]">{configResponse.creatorUsername}</span>
-        </p>
-      )}
+      {/* Creator attribution + copy link */}
+      <div className="flex items-center justify-between w-full">
+        {configResponse?.creatorUsername ? (
+          <p className="text-xs text-[var(--color-text-muted)]">
+            Created by{" "}
+            <span className="text-[var(--color-text)]">{configResponse.creatorUsername}</span>
+          </p>
+        ) : <span />}
+        <button
+          onClick={handleCopyLink}
+          className="flex items-center gap-1.5 text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+        >
+          {copied ? (
+            <>
+              <svg className="w-3.5 h-3.5 text-[var(--color-success)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <span className="text-[var(--color-success)]">Copied!</span>
+            </>
+          ) : (
+            <>
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              Copy link
+            </>
+          )}
+        </button>
+      </div>
 
       {/* Previous-win banner — shown when a returning winner revisits */}
       {previousSecret && !previousSecretDismissed && (
@@ -229,8 +263,11 @@ export default function PlayPage() {
       )}
 
       {/* Footer */}
-      <footer className="w-full pt-4 pb-2 border-t border-[var(--color-border)] flex items-center justify-center">
+      <footer className="w-full pt-4 pb-2 border-t border-[var(--color-border)] flex items-center justify-between">
         <AttributionsDialog />
+        <Link to="/privacy" className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors">
+          Privacy Policy
+        </Link>
       </footer>
     </div>
   );

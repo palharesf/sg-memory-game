@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "@/services/api";
 import { MIN_PAIRS, MAX_PAIRS, defaultMistakes, minMistakes } from "@/game/constants";
@@ -209,7 +210,7 @@ export default function CreatePage() {
         {isRandom && (<>{/* Mistakes */}
         <div className="space-y-2">
           <Label htmlFor="mistakes" className="text-[var(--color-text)]">
-            Mistakes allowed{" "}
+            Mistake limit{" "}
             <span className="text-[var(--color-text-muted)] font-normal">(optional)</span>
           </Label>
           <div className="flex items-center gap-2">
@@ -295,6 +296,12 @@ export default function CreatePage() {
 
       <div className="mt-10">
         <AdSlot slot="create-bottom" className="w-full h-[90px]" />
+      </div>
+
+      <div className="pb-6 text-center">
+        <Link to="/privacy" className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors">
+          Privacy Policy
+        </Link>
       </div>
       </div>
     </div>
