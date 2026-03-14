@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { generateBoard, generateFixedBoard } from "@/game/boardGenerator";
 import { shouldIgnoreClick, isMatch, isWon, isLost } from "@/game/rules";
 import { MISMATCH_DELAY_MS } from "@/game/constants";
+import { useTheme } from "@/hooks/useTheme";
 import type { GameState, GameConfig } from "@/types/game";
 
 const initialState = (): GameState => ({
@@ -15,6 +16,7 @@ const initialState = (): GameState => ({
 });
 
 export function useGameState(config: GameConfig | null) {
+  const [theme] = useTheme();
   const [state, setState] = useState<GameState>(initialState);
 
   // Timer via requestAnimationFrame
@@ -83,11 +85,11 @@ export function useGameState(config: GameConfig | null) {
     setState({
       ...initialState(),
       cards: config.isRandom
-        ? generateBoard(config.pairs, config.theme)
-        : generateFixedBoard(config.pairs, config.id, config.theme),
+        ? generateBoard(config.pairs, theme)
+        : generateFixedBoard(config.pairs, config.id, theme),
       status: "idle",
     });
-  }, [config, stopTimer]);
+  }, [config, theme, stopTimer]);
 
   useEffect(() => {
     initGame();

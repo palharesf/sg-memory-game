@@ -2,12 +2,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "@/services/api";
-import { MIN_PAIRS, MAX_PAIRS, defaultMistakes, minMistakes } from "@/game/constants";
+import { MIN_PAIRS, MAX_PAIRS, minMistakes } from "@/game/constants";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import AdSlot from "@/components/AdSlot";
-import type { GameTheme } from "@/types/game";
 
 const DEFAULT_PAIRS = 8;
 
@@ -17,10 +16,9 @@ export default function CreatePage() {
   const authFailed = searchParams.get("auth") === "failed";
 
   const [isRandom, setIsRandom] = useState(true);
-  const [theme, setTheme] = useState<GameTheme>("generic");
   const [pairs, setPairs] = useState(DEFAULT_PAIRS);
-  // null = unlimited
-  const [mistakes, setMistakes] = useState<number | "">(defaultMistakes(DEFAULT_PAIRS));
+  // null = unlimited; default is no limit
+  const [mistakes, setMistakes] = useState<number | "">("");
   const [timeLimit, setTimeLimit] = useState<number | "">("");
   const [secret, setSecret] = useState("");
   const [loading, setLoading] = useState(false);
@@ -29,11 +27,10 @@ export default function CreatePage() {
   function handlePairsChange(value: number) {
     const clamped = Math.max(MIN_PAIRS, Math.min(MAX_PAIRS, value));
     setPairs(clamped);
-    // Keep mistakes in sync only if it was still at the previous default
+    // If a mistake limit is set, clamp it to the new minimum
     setMistakes((prev) => {
-      if (prev === "") return ""; // user already cleared it (unlimited)
-      const wasDefault = prev === defaultMistakes(pairs);
-      return wasDefault ? defaultMistakes(clamped) : Math.max(minMistakes(clamped), prev);
+      if (prev === "") return "";
+      return Math.max(minMistakes(clamped), prev);
     });
   }
 
@@ -57,7 +54,6 @@ export default function CreatePage() {
       const { id } = await api.createGame({
         pairs,
         isRandom,
-        theme,
         mistakes: isRandom ? mistakesValue : null,
         timeLimit: isRandom ? (timeLimit === "" ? null : timeLimit) : null,
         secret: secret.trim(),
@@ -132,49 +128,6 @@ export default function CreatePage() {
               ].join(" ")}
             />
           </button>
-        </div>
-
-        {/* Theme */}
-        <div className="space-y-2">
-          <Label className="text-[var(--color-text)]">Card theme</Label>
-          <div className="flex rounded-lg border border-[var(--color-border)] overflow-hidden">
-            <button
-              type="button"
-              onClick={() => setTheme("generic")}
-              className={[
-                "flex-1 px-3 py-2 text-sm font-medium transition-colors",
-                theme === "generic"
-                  ? "bg-[var(--color-primary)] text-[var(--color-bg-base)]"
-                  : "bg-[var(--color-bg-elevated)] text-[var(--color-text-muted)] hover:text-[var(--color-text)]",
-              ].join(" ")}
-            >
-              Generic Icons
-            </button>
-            <button
-              type="button"
-              disabled
-              title="Coming soon — waiting for community art donations"
-              className="flex-1 px-3 py-2 text-sm font-medium bg-[var(--color-bg-elevated)] text-[var(--color-text-muted)] opacity-50 cursor-not-allowed flex items-center justify-center gap-1.5 border-l border-[var(--color-border)]"
-            >
-              <svg aria-hidden="true" className="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m0 0v2m0-2h2m-2 0H10m2-6V7a4 4 0 00-8 0v4" />
-                <rect x="3" y="11" width="18" height="11" rx="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              SG Donated Art
-            </button>
-          </div>
-          <p className="text-xs text-[var(--color-text-muted)]">
-            Donated Art coming soon — contribute your art in the{" "}
-            <a
-              href="https://www.steamgifts.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[var(--color-primary)] hover:underline"
-            >
-              SteamGifts thread
-            </a>
-            .
-          </p>
         </div>
 
         {/* Pairs */}

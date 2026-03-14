@@ -10,7 +10,6 @@ export interface GameConfig {
   mistakes: number | null; // null = unlimited; always null for non-random games
   timeLimit: number | null; // seconds; null = no limit; always null for non-random games
   isRandom: boolean;
-  theme: GameTheme;
   creatorSteamId: string | null;
   createdAt: number; // unix seconds
 }
@@ -59,7 +58,6 @@ export interface CreateGameRequest {
   mistakes: number | null;
   timeLimit: number | null;
   isRandom: boolean;
-  theme: GameTheme;
   secret: string;
 }
 

@@ -6,7 +6,6 @@ import { api } from "@/services/api";
 import Board from "@/components/game/Board";
 import StatusBar from "@/components/game/StatusBar";
 import Leaderboard from "@/components/game/Leaderboard";
-import AttributionsDialog from "@/components/game/AttributionsDialog";
 import AdSlot from "@/components/AdSlot";
 import { Button } from "@/components/ui/button";
 import type { GameConfig, GameConfigResponse } from "@/types/game";
@@ -18,7 +17,6 @@ function responseToConfig(r: GameConfigResponse): GameConfig {
     mistakes: r.mistakes,
     timeLimit: r.timeLimit,
     isRandom: r.isRandom,
-    theme: r.theme,
     creatorSteamId: r.creatorSteamId,
     createdAt: r.createdAt,
   };
@@ -164,28 +162,6 @@ export default function PlayPage() {
         </button>
       </div>
 
-      {/* Previous-win banner — shown when a returning winner revisits */}
-      {previousSecret && !previousSecretDismissed && (
-        <div className="w-full rounded-lg border border-[var(--color-primary)]/30 bg-[var(--color-primary)]/10 px-4 py-4 space-y-2">
-          <div className="flex items-start justify-between gap-3">
-            <p className="text-sm font-medium text-[var(--color-text-bright)]">
-              You've already solved this one!
-            </p>
-            <button
-              onClick={() => setPreviousSecretDismissed(true)}
-              aria-label="Dismiss"
-              className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors shrink-0"
-            >
-              ✕
-            </button>
-          </div>
-          <p className="text-xs text-[var(--color-text-muted)]">Your secret:</p>
-          <p className="font-mono text-[var(--color-text-bright)] break-all bg-[var(--color-bg-elevated)] rounded px-3 py-2 select-all text-sm">
-            {previousSecret}
-          </p>
-        </div>
-      )}
-
       {/* Ad slot — above the board */}
       <AdSlot slot="play-top" className="w-full h-[60px]" />
 
@@ -198,6 +174,26 @@ export default function PlayPage() {
 
       {/* Board */}
       <Board cards={state.cards} pairs={config.pairs} onCardClick={flipCard} />
+
+      {/* Previous-win reveal — returning winner, hasn't played this session */}
+      {previousSecret && !previousSecretDismissed && state.status !== "won" && (
+        <div className="w-full rounded-lg border border-[var(--color-success)]/40 bg-[var(--color-success)]/10 px-4 py-5 space-y-3">
+          <p className="text-[var(--color-success)] font-semibold text-lg">You've already solved this one!</p>
+          <div className="space-y-1">
+            <p className="text-xs text-[var(--color-text-muted)]">Your secret:</p>
+            <p className="font-mono text-[var(--color-text-bright)] break-all bg-[var(--color-bg-elevated)] rounded px-3 py-2 select-all">
+              {previousSecret}
+            </p>
+          </div>
+          <Button
+            onClick={() => setPreviousSecretDismissed(true)}
+            variant="outline"
+            className="border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-bg-elevated)]"
+          >
+            Play again
+          </Button>
+        </div>
+      )}
 
       {/* Game over overlays */}
       {state.status === "won" && (
@@ -264,7 +260,9 @@ export default function PlayPage() {
 
       {/* Footer */}
       <footer className="w-full pt-4 pb-2 border-t border-[var(--color-border)] flex items-center justify-between">
-        <AttributionsDialog />
+        <Link to="/theme" className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors">
+          Card Theme & Attributions
+        </Link>
         <Link to="/privacy" className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors">
           Privacy Policy
         </Link>
