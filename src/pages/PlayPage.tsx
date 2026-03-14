@@ -38,9 +38,11 @@ export default function PlayPage() {
   const [previousSecret, setPreviousSecret] = useState<string | null>(null);
   const [previousSecretDismissed, setPreviousSecretDismissed] = useState(false);
 
-  // Copy link state
+  // Copy state
   const [copied, setCopied] = useState(false);
+  const [copiedSecret, setCopiedSecret] = useState(false);
   const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const copySecretTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const config = useMemo(
     () => (configResponse ? responseToConfig(configResponse) : null),
@@ -109,6 +111,14 @@ export default function PlayPage() {
     });
   }
 
+  function handleCopySecret(text: string) {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedSecret(true);
+      if (copySecretTimerRef.current) clearTimeout(copySecretTimerRef.current);
+      copySecretTimerRef.current = setTimeout(() => setCopiedSecret(false), 2000);
+    });
+  }
+
   // -------------------------------------------------------------------------
 
   if (loadError) {
@@ -156,7 +166,7 @@ export default function PlayPage() {
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
               </svg>
-              Copy link
+              Copy game link
             </>
           )}
         </button>
@@ -185,13 +195,22 @@ export default function PlayPage() {
               {previousSecret}
             </p>
           </div>
-          <Button
-            onClick={() => setPreviousSecretDismissed(true)}
-            variant="outline"
-            className="border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-bg-elevated)]"
-          >
-            Play again
-          </Button>
+          <div className="flex gap-2 flex-wrap">
+            <Button
+              onClick={() => handleCopySecret(previousSecret)}
+              variant="outline"
+              className="border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-bg-elevated)]"
+            >
+              {copiedSecret ? "Copied!" : "Copy secret"}
+            </Button>
+            <Button
+              onClick={() => setPreviousSecretDismissed(true)}
+              variant="outline"
+              className="border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-bg-elevated)]"
+            >
+              Play again
+            </Button>
+          </div>
         </div>
       )}
 
@@ -221,13 +240,24 @@ export default function PlayPage() {
             </p>
           )}
 
-          <Button
-            onClick={resetGame}
-            variant="outline"
-            className="border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-bg-elevated)]"
-          >
-            Play again
-          </Button>
+          <div className="flex gap-2 flex-wrap">
+            {secret !== null && (
+              <Button
+                onClick={() => handleCopySecret(secret)}
+                variant="outline"
+                className="border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-bg-elevated)]"
+              >
+                {copiedSecret ? "Copied!" : "Copy secret"}
+              </Button>
+            )}
+            <Button
+              onClick={resetGame}
+              variant="outline"
+              className="border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-bg-elevated)]"
+            >
+              Play again
+            </Button>
+          </div>
         </div>
       )}
 

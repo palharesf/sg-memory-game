@@ -34,10 +34,11 @@ export default function Footer() {
         </div>
 
         {/* Nav row */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-center gap-x-4">
           <Link to="/theme" className="hover:text-[var(--color-text)] transition-colors">
             Card Theme &amp; Attributions
           </Link>
+          <span className="select-none opacity-30">•</span>
           <Link to="/privacy" className="hover:text-[var(--color-text)] transition-colors">
             Privacy Policy
           </Link>

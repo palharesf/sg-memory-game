@@ -17,7 +17,7 @@ export default function StatusBar({ state, config }: StatusBarProps) {
       {/* Mistakes */}
       <div className="flex items-center gap-1.5">
         <span className="text-[var(--color-text-muted)]">
-          {unlimited ? "Mistakes:" : "Left:"}
+          {unlimited ? "Mistakes:" : "Mistakes left:"}
         </span>
         <span
           className={[
