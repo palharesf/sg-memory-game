@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "@/services/api";
 import { MIN_PAIRS, MAX_PAIRS, minMistakes } from "@/game/constants";
@@ -251,11 +250,6 @@ export default function CreatePage() {
         <AdSlot slot="create-bottom" className="w-full h-[90px]" />
       </div>
 
-      <div className="pb-6 text-center">
-        <Link to="/privacy" className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors">
-          Privacy Policy
-        </Link>
-      </div>
       </div>
     </div>
   );

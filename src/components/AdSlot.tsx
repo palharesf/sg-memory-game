@@ -4,19 +4,29 @@ interface AdSlotProps {
 }
 
 /**
- * Placeholder for AdSense units.
- * In production, replace the inner div with the AdSense <ins> tag.
- * The outer wrapper preserves layout space regardless of whether ads load.
+ * AdSense unit placeholder.
+ *
+ * Currently returns null (no blank space) while awaiting AdSense approval.
+ *
+ * When approved:
+ * 1. Get real ad-slot IDs from AdSense dashboard
+ * 2. Replace the null return with an <ins> tag:
+ *
+ *   useEffect(() => { (window.adsbygoogle = window.adsbygoogle || []).push({}); }, []);
+ *   return (
+ *     <ins
+ *       className={`adsbygoogle ${className}`}
+ *       style={{ display: "block" }}
+ *       data-ad-client="ca-pub-6255805898920780"
+ *       data-ad-slot={slot}
+ *       data-ad-format="auto"
+ *       data-full-width-responsive="true"
+ *     />
+ *   );
+ *
+ * The <ins> element collapses to 0 height automatically when no ad fills it,
+ * so no extra show/hide logic is needed.
  */
-export default function AdSlot({ slot, className = "" }: AdSlotProps) {
-  return (
-    <div
-      className={`flex items-center justify-center bg-[var(--color-bg-elevated)] rounded border border-[var(--color-border)] text-xs text-[var(--color-text-muted)] ${className}`}
-      data-ad-slot={slot}
-      aria-label="Advertisement"
-    >
-      {/* AdSense unit — replace this comment with <ins> tag when ready */}
-      <span className="select-none opacity-40">ad</span>
-    </div>
-  );
+export default function AdSlot(_props: AdSlotProps) {
+  return null;
 }

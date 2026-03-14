@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useGameState } from "@/hooks/useGameState";
 import { useAuth } from "@/context/AuthContext";
 import { api } from "@/services/api";
@@ -258,15 +258,6 @@ export default function PlayPage() {
         </div>
       )}
 
-      {/* Footer */}
-      <footer className="w-full pt-4 pb-2 border-t border-[var(--color-border)] flex items-center justify-between">
-        <Link to="/theme" className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors">
-          Card Theme & Attributions
-        </Link>
-        <Link to="/privacy" className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors">
-          Privacy Policy
-        </Link>
-      </footer>
     </div>
   );
 }
