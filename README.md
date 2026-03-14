@@ -48,10 +48,10 @@ No login required to play. But if you sign in with Steam, your best time is reco
 Signed-in players can visit *My Games* to see every game they've created and every game they've won, along with their best times.
 
 ## I want to add an image for the project! Can I?
-Please do! I want to support two themes: one with the generic gaming items, and one with community donated art. Remember when you created art for the Advent Calendar? I would love if you donated it to this project! I'll reserve a comment in the thread for art donation, feel free to comment there if you want to donate something you created. Ideally, 512x512 transparent PNG that I'll use in the project and give you attribution for, and that's it. There's no guarantee I'll accept or use your donated images, so by donating art you agree to that.
+Please do! Remember when you created art for the Advent Calendar? Or for a puzzle? Or for fun? I would love if you donated it to this project! I'll reserve a comment in the thread for art donation, feel free to comment there if you want to donate something you created. Ideally, 512x512 transparent PNG. If I use in the project I'll give you attribution for it, and that's it. Also if there's too much interest in art donation, I might curate which ones will actually show up in the game (or keep a massive list, who knows), so by donating donating your art you agree to that.
 
 ## What else do you have on the roadmap? Can I suggest a feature or a bugfix?
-Same deal with SG Minesweeper. The best way to iterate is for you to suggest a feature here, we can have a discussion as a community, and I might implement it or not. This time I decided to add most of the stuff I wanted before release thou, so expect fewer changes in the next few days and weeks.
+This time I checked all my boxes before releasing the game. But for suggestions, it's the same deal as with SG Minesweeper. Suggest a feature here, we can have a discussion as a community, and I might implement it or not. But since I implemented most of the stuff before releasing it, expect fewer changes in the next few days and weeks.
 
 ## Is this safe for sending really important and sensitive secrets?
 Safer than SG Minesweeper, still unsafe generally.
@@ -60,7 +60,7 @@ Safer than SG Minesweeper, still unsafe generally.
 No love from me this time.
 
 ## Credits
-Many thanks to the playtesters that once again ensured what I made worked and was intuitive. I always appreciate your kindness
+Many thanks to the playtesters that once again ensured what I made worked, was intuitive and easy to use, and that overall provided very welcome criticism of stuff that was clunky or misleading prior to the launch. I appreciate your kindness and support.
 - [adam1224](https://www.steamgifts.com/user/adam1224)
 - [VenomousNyx](https://www.steamgifts.com/user/VenomousNyx)
 - [PapaSmok](https://www.steamgifts.com/user/PapaSmok)
@@ -82,4 +82,18 @@ npm run dev
 
 You'll need a `wrangler.toml` pointing at a D1 database and a `STEAM_API_KEY` secret set in Cloudflare for auth to work. See [Cloudflare Pages docs](https://developers.cloudflare.com/pages/) for deployment setup.
 
-**Card images:** [game-icons.net](https://game-icons.net) — Creative Commons 3.0 BY. See the Attributions dialog in-app for the full list.
+**Card images:** [game-icons.net](https://game-icons.net) — Creative Commons 3.0 BY. See the Card Theme page in-app for the full list, including donated art.
+
+**Adding or removing Generic Icons:**
+
+1. **Add an image:** Drop a 512×512 transparent PNG into `public/images/000000/transparent/1x1/{author}/{filename}.png`, then add a line to the `POOL` array in `src/data/imagePool.ts`:
+   ```ts
+   img("author-key", "filename.png"),
+   ```
+   If the author isn't already in the `AUTHORS` map at the top of that file, add them there first.
+
+2. **Remove an image:** Delete the `img(...)` line from `POOL` and delete the file from `public/`.
+
+3. **Author keys** must match exactly between the `img()` call and the `AUTHORS` map — the key is used for grouping attributions on the Card Theme page.
+
+The pool currently lives in `src/data/imagePool.ts`. Images are served as static assets from `public/`; no build step needed for adding files there.
