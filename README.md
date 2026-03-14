@@ -96,4 +96,21 @@ You'll need a `wrangler.toml` pointing at a D1 database and a `STEAM_API_KEY` se
 
 3. **Author keys** must match exactly between the `img()` call and the `AUTHORS` map — the key is used for grouping attributions on the Card Theme page.
 
-The pool currently lives in `src/data/imagePool.ts`. Images are served as static assets from `public/`; no build step needed for adding files there.
+**Adding Donated Art:**
+
+Donated images use a separate folder and a separate helper to keep them distinct from game-icons.net assets.
+
+1. Drop the 512×512 transparent PNG into `public/images/donated/{filename}.png`
+2. Add the donor to the `AUTHORS` map in `src/data/imagePool.ts` (use their SteamGifts URL):
+   ```ts
+   "adam1224": { key: "adam1224", displayName: "adam1224", url: "https://www.steamgifts.com/user/adam1224" },
+   ```
+3. Add an entry to `DONATED_POOL` using `donatedImg()` (not `img()`):
+   ```ts
+   export const DONATED_POOL: PoolImage[] = [
+     donatedImg("adam1224", "my-artwork.png"),
+   ];
+   ```
+4. Once `DONATED_POOL` has at least as many images as the maximum pairs setting (18), the "SG Donated Art" theme will unlock automatically.
+
+The pool files live in `src/data/imagePool.ts`. Images are served as static assets from `public/`; no build step needed for adding files there.

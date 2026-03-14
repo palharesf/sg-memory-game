@@ -283,10 +283,33 @@ export const POOL: PoolImage[] = [
 /** Total number of images available in the pool */
 export const POOL_SIZE = POOL.length;
 
+// ---------------------------------------------------------------------------
+// Donated art helpers — separate path from game-icons.net assets
+// ---------------------------------------------------------------------------
+
+const DONATED_BASE = "/images/donated";
+
+/**
+ * Use this helper for donated images, NOT img().
+ * Files go in public/images/donated/{filename}.png
+ * Add the donor to AUTHORS with their SteamGifts URL.
+ *
+ * Example:
+ *   donatedImg("adam1224", "my-artwork.png")
+ *   // → AUTHORS entry: { key: "adam1224", displayName: "adam1224", url: "https://www.steamgifts.com/user/adam1224" }
+ */
+function donatedImg(author: string, file: string): PoolImage {
+  const name = file.replace(/\.png$/, "").replace(/-/g, " ");
+  return { path: `${DONATED_BASE}/${file}`, authorKey: author, name };
+}
+
+// Suppress unused warning until first donation arrives
+void donatedImg;
+
 /**
  * Community-donated art pool — locked until enough art is collected.
- * To add images: drop 512×512 transparent PNGs into public/images/donated/
- * and add entries here following the same img() pattern.
+ * To add: drop 512×512 transparent PNG into public/images/donated/, add entry
+ * below using donatedImg(), and add the donor to AUTHORS above.
  */
 export const DONATED_POOL: PoolImage[] = [];
 
