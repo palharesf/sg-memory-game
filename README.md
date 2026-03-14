@@ -21,7 +21,7 @@ Welcome, SG Memory Game.
 
 ## What is it and how does it work?
 
-SG Memory Game is a community tool for hiding giveaway secrets — SteamGifts links, entry codes, whatever — behind a classic memory/concentration card game. Think of it as a lock: only players who solve the puzzle get the key.
+SG Memory Game is a community tool for hiding giveaway secrets — SteamGifts links, entry codes, whatever — behind a classic memory card game. Think of it as a lock: only players who solve the puzzle get the key.
 
 **Creating a game**
 
@@ -29,7 +29,7 @@ Head to the homepage, configure your puzzle, paste in your secret, and hit Creat
 
 A few things you can tune when creating:
 
-- **Pairs (4–18):** Controls the board size. 4 pairs is a 3×4 grid of 8 cards; 18 pairs is a 6×6 grid of 36 cards. The default is 8 pairs (4×4) — a solid starting point. I don't want games taking hours to complete with absurd difficulty as we see with 900 piece Jigidis or insane Minesweeper fields. You won't find that level of sadism here.
+- **Pairs (4–18):** Controls the board size. 4 pairs is a 2×4 grid of 8 cards; 18 pairs is a 6×6 grid of 36 cards. The default is 8 pairs (4×4) — a solid starting point. I don't want games taking hours to complete with absurd difficulty as we see with 900 piece Jigidis or insane Minesweeper fields. You won't find that level of sadism here, although games can still be punishing if the creator desires using mistake and time limits. You have a problem with that, complain with the person who set those parameters, not me.
 - **Board mode — Random or Fixed:**
   - *Random* reshuffles card positions on every attempt, so no one can share a solution or memorize the layout between runs. Supports a leaderboard, personal best times, mistake limits, and time limits.
   - *Fixed* keeps the same layout every time. No reshuffling, no competitive pressure, no leaderboard. Basically, unfun, but that's what I understand some player want so have a field day, please. Good for people who complain about fairness without understanding trade-offs. Yeah it's that boring and sour, sue me.
@@ -49,6 +49,10 @@ Signed-in players can visit *My Games* to see every game they've created and eve
 
 ## I want to add an image for the project! Can I?
 Please do! Remember when you created art for the Advent Calendar? Or for a puzzle? Or for fun? I would love if you donated it to this project! I'll reserve a comment in the thread for art donation, feel free to comment there if you want to donate something you created. Ideally, 512x512 transparent PNG. If I use in the project I'll give you attribution for it, and that's it. Also if there's too much interest in art donation, I might curate which ones will actually show up in the game (or keep a massive list, who knows), so by donating donating your art you agree to that.
+
+By the way - we work with an image pool. The current image pool can be seen [here](https://sg-memory-game.pages.dev/theme). Once we have 18 user submissions, the community donation theme will be unlocked and you can choose it for your games.
+
+Comment for donations [here](https://www.steamgifts.com/discussion/xbMXq/sg-memory-game#aepUQi8)
 
 ## What else do you have on the roadmap? Can I suggest a feature or a bugfix?
 This time I checked all my boxes before releasing the game. But for suggestions, it's the same deal as with SG Minesweeper. Suggest a feature here, we can have a discussion as a community, and I might implement it or not. But since I implemented most of the stuff before releasing it, expect fewer changes in the next few days and weeks.

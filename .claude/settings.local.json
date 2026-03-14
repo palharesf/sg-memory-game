@@ -11,7 +11,12 @@
       "WebFetch(domain:www.steamgifts.com)",
       "WebFetch(domain:pastebin.com)",
       "Bash(curl -s \"https://pastebin.com/raw/9hnBD1UT\")",
-      "Bash(cd \"C:\\\\Users\\\\palha\\\\Documents\\\\GitHub\\\\sg-memory-game\" && npx wrangler d1 migrations apply sg-memory-game --remote 2>&1)"
+      "Bash(cd \"C:\\\\Users\\\\palha\\\\Documents\\\\GitHub\\\\sg-memory-game\" && npx wrangler d1 migrations apply sg-memory-game --remote 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\palha\\\\Documents\\\\GitHub\\\\sg-memory-game\" && npx wrangler d1 migrations apply sg-memory-game-db --remote 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\palha\\\\Documents\\\\GitHub\\\\sg-memory-game\" && npx wrangler d1 execute sg-memory-game-db --remote --command \"INSERT OR IGNORE INTO d1_migrations \\(name, applied_at\\) VALUES \\('0002_add_is_random.sql', datetime\\('now'\\)\\)\" 2>&1)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ]
   }
 }
