@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 
-// TODO: replace these with real URLs once confirmed
-const KOFI_URL = "https://ko-fi.com/fernandopa"; // update if different
-const WISHLIST_URL = "https://store.steampowered.com/wishlist/id/fernandopa"; // update if different
+const KOFI_URL = "https://ko-fi.com/fernandopa";
+const WISHLIST_URL = "https://store.steampowered.com/wishlist/id/fernandopaa/";
 const GITHUB_REPO_URL = "https://github.com/palharesf/sg-memory-game";
 const AUTHOR_URL = "https://palharesf.github.io";
 
