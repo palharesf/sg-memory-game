@@ -73,7 +73,7 @@ export default function PrivacyPage() {
         <p className="text-sm text-[var(--color-text)]">
           Questions or requests can be directed to the project thread on{" "}
           <a
-            href="https://www.steamgifts.com"
+            href="https://www.steamgifts.com/discussion/xbMXq/sg-memory-game"
             target="_blank"
             rel="noopener noreferrer"
             className="text-[var(--color-primary)] hover:underline"

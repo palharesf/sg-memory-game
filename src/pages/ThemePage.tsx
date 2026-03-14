@@ -160,7 +160,7 @@ export default function ThemePage() {
           <p className="text-xs text-[var(--color-text-muted)]">
             Community-contributed artwork. Want to donate? Drop a 512×512 transparent PNG in the{" "}
             <a
-              href="https://www.steamgifts.com"
+              href="https://www.steamgifts.com/discussion/xbMXq/sg-memory-game#aepUQi8"
               target="_blank"
               rel="noopener noreferrer"
               className="text-[var(--color-primary)] hover:underline"
