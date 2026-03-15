@@ -125,6 +125,20 @@ The pool files live in `src/data/imagePool.ts`. Images are served as static asse
 
 ## Changelog
 
+### v1.1 — 2026-03-15
+
+- Won game secrets now persist to localStorage — anonymous players retain their secret across revisits; logged-in players get fast local lookup with D1 as cross-device fallback
+- Area and card background colour pickers on the play page (6 presets, dark → light, persisted per device)
+- Share result button in the win overlay — copies a SteamGifts-formatted markdown message with game link, time, and mistake count
+- Default mistake limit changed to none (unlimited) when creating a game
+- Card theme is now a player preference (localStorage), not a game setting — removed from the creation form
+- Gear icon in the header opens an options menu with My Games and Card Theme
+- New Card Theme page at `/theme` — select theme, view all card images and attributions
+- Fixed board games explicitly noted as having no leaderboard, mistake counter, or time counter
+- Previous-win secret moved below the board (consistent with the win overlay position)
+- Privacy policy page at `/privacy`
+- OG/Twitter meta tags for social sharing
+
 ### v1.0 — 2026-03-15
 
 Initial public release.
