@@ -4,12 +4,13 @@ import type { Background } from "@/hooks/useBackground";
 interface BackgroundPickerProps {
   value: Background;
   onChange: (bg: Background) => void;
+  label?: string;
 }
 
-export default function BackgroundPicker({ value, onChange }: BackgroundPickerProps) {
+export default function BackgroundPicker({ value, onChange, label = "Background:" }: BackgroundPickerProps) {
   return (
     <div className="flex items-center gap-2">
-      <span className="text-xs text-[var(--color-text-muted)] shrink-0">Background:</span>
+      <span className="text-xs text-[var(--color-text-muted)] shrink-0">{label}</span>
       <div className="flex items-center gap-1.5">
         {BACKGROUNDS.map((bg) => (
           <button

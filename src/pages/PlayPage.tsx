@@ -9,6 +9,7 @@ import Leaderboard from "@/components/game/Leaderboard";
 import BackgroundPicker from "@/components/game/BackgroundPicker";
 import AdSlot from "@/components/AdSlot";
 import { useBackground } from "@/hooks/useBackground";
+import { useCardBackground } from "@/hooks/useCardBackground";
 import { Button } from "@/components/ui/button";
 import { getWonGame, setWonGame } from "@/lib/wonGames";
 import { formatTime } from "@/lib/formatTime";
@@ -51,6 +52,7 @@ export default function PlayPage() {
   const copyShareTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [bg, setBg] = useBackground();
+  const [cardBg, setCardBg] = useCardBackground();
 
   const config = useMemo(
     () => (configResponse ? responseToConfig(configResponse) : null),
@@ -143,8 +145,8 @@ export default function PlayPage() {
   function handleCopyShare() {
     const url = window.location.href;
     const text = config?.isRandom
-      ? `I solved the SG Memory Game puzzle in ${formatTime(state.timeElapsed)} with ${state.mistakesMade} mistake${state.mistakesMade !== 1 ? "s" : ""}! Think you can beat me? ${url}`
-      : `I solved the SG Memory Game puzzle! ${url}`;
+      ? `I solved the [${id}](${url}) puzzle in ${formatTime(state.timeElapsed)} with ${state.mistakesMade} mistake${state.mistakesMade !== 1 ? "s" : ""}!`
+      : `I solved the [${id}](${url}) puzzle!`;
     navigator.clipboard.writeText(text).then(() => {
       setCopiedShare(true);
       if (copyShareTimerRef.current) clearTimeout(copyShareTimerRef.current);
@@ -182,7 +184,14 @@ export default function PlayPage() {
   }
 
   return (
-    <div className="min-h-full w-full transition-colors duration-300" style={{ backgroundColor: bg.color }}>
+    <div
+      className="min-h-full w-full transition-colors duration-300"
+      style={{
+        backgroundColor: bg.color,
+        "--card-front-bg": cardBg.color,
+        "--card-back-bg": cardBg.color,
+      } as React.CSSProperties}
+    >
     <div className="flex flex-col items-center px-3 py-3 sm:py-4 gap-3 sm:gap-4 max-w-2xl mx-auto w-full">
       {/* Creator attribution + copy link */}
       <div className="flex items-center justify-between w-full">
@@ -214,9 +223,10 @@ export default function PlayPage() {
         </button>
       </div>
 
-      {/* Background picker */}
-      <div className="w-full flex justify-end">
-        <BackgroundPicker value={bg} onChange={setBg} />
+      {/* Background + card colour pickers */}
+      <div className="w-full flex flex-wrap justify-end gap-x-4 gap-y-1.5">
+        <BackgroundPicker value={bg} onChange={setBg} label="Area:" />
+        <BackgroundPicker value={cardBg} onChange={setCardBg} label="Cards:" />
       </div>
 
       {/* Ad slot — above the board */}
