@@ -11,6 +11,7 @@ import AdSlot from "@/components/AdSlot";
 import { useBackground } from "@/hooks/useBackground";
 import { Button } from "@/components/ui/button";
 import { getWonGame, setWonGame } from "@/lib/wonGames";
+import { formatTime } from "@/lib/formatTime";
 import type { GameConfig, GameConfigResponse } from "@/types/game";
 
 function responseToConfig(r: GameConfigResponse): GameConfig {
@@ -44,8 +45,10 @@ export default function PlayPage() {
   // Copy state
   const [copied, setCopied] = useState(false);
   const [copiedSecret, setCopiedSecret] = useState(false);
+  const [copiedShare, setCopiedShare] = useState(false);
   const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const copySecretTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const copyShareTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [bg, setBg] = useBackground();
 
@@ -134,6 +137,18 @@ export default function PlayPage() {
       setCopied(true);
       if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
       copyTimerRef.current = setTimeout(() => setCopied(false), 2000);
+    });
+  }
+
+  function handleCopyShare() {
+    const url = window.location.href;
+    const text = config?.isRandom
+      ? `I solved the SG Memory Game puzzle in ${formatTime(state.timeElapsed)} with ${state.mistakesMade} mistake${state.mistakesMade !== 1 ? "s" : ""}! Think you can beat me? ${url}`
+      : `I solved the SG Memory Game puzzle! ${url}`;
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedShare(true);
+      if (copyShareTimerRef.current) clearTimeout(copyShareTimerRef.current);
+      copyShareTimerRef.current = setTimeout(() => setCopiedShare(false), 2000);
     });
   }
 
@@ -282,6 +297,13 @@ export default function PlayPage() {
                 {copiedSecret ? "Copied!" : "Copy secret"}
               </Button>
             )}
+            <Button
+              onClick={handleCopyShare}
+              variant="outline"
+              className="border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-bg-elevated)]"
+            >
+              {copiedShare ? "Copied!" : "Share result"}
+            </Button>
             <Button
               onClick={resetGame}
               variant="outline"

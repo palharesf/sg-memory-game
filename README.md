@@ -32,7 +32,7 @@ A few things you can tune when creating:
 - **Pairs (4–18):** Controls the board size. 4 pairs is a 2×4 grid of 8 cards; 18 pairs is a 6×6 grid of 36 cards. The default is 8 pairs (4×4) — a solid starting point. I don't want games taking hours to complete with absurd difficulty as we see with 900 piece Jigidis or insane Minesweeper fields. You won't find that level of sadism here, although games can still be punishing if the creator desires using mistake and time limits. You have a problem with that, complain with the person who set those parameters, not me.
 - **Board mode — Random or Fixed:**
   - *Random* reshuffles card positions on every attempt, so no one can share a solution or memorize the layout between runs. Supports a leaderboard, personal best times, mistake limits, and time limits.
-  - *Fixed* keeps the same layout every time. No reshuffling, no competitive pressure, no leaderboard. Basically, unfun, but that's what I understand some player want so have a field day, please. Good for people who complain about fairness without understanding trade-offs. Yeah it's that boring and sour, sue me.
+  - *Fixed* keeps the same layout every time. No reshuffling, no competitive pressure, no leaderboard, no mistake or time limits. Basically, unfun, but that's what I understand some player want so have a field day, please. Good for people who complain about fairness without understanding trade-offs. Yeah it's that boring and sour, sue me.
 - **Card theme:** Choose between *Generic Icons* (a pool of gaming symbols, available now) and *SG Donated Art* (community-contributed art, coming once enough pieces are donated — see below).
 - **Mistake limit:** How many wrong flips before game over. Leave it empty for no limit.
 - **Time limit:** Seconds to beat the board. Leave it empty for no timer.
@@ -42,6 +42,8 @@ A few things you can tune when creating:
 Visit a shared link and start flipping. Two cards face up at once — find the matching pair and they stay revealed. Flip a mismatch and they flip back after a moment. Match all pairs and the secret is yours.
 
 No login required to play. But if you sign in with Steam, your best time is recorded per game and you'll show up on the leaderboard (random boards only). Steam login is read-only — the app only sees your public profile. And if you revisit a game you already won, the secret is shown to you immediately — no need to play through it again.
+
+A note on leaderboards: they appear on all *Random* board games and are open to any signed-in player, regardless of whether the game creator was logged in. *Fixed* board games never have leaderboards — and never show a mistake or time counter during play, since those limits only apply to random boards.
 
 **Your history**
 
