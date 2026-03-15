@@ -8,6 +8,7 @@ import StatusBar from "@/components/game/StatusBar";
 import Leaderboard from "@/components/game/Leaderboard";
 import AdSlot from "@/components/AdSlot";
 import { Button } from "@/components/ui/button";
+import { getWonGame, setWonGame } from "@/lib/wonGames";
 import type { GameConfig, GameConfigResponse } from "@/types/game";
 
 function responseToConfig(r: GameConfigResponse): GameConfig {
@@ -92,16 +93,37 @@ export default function PlayPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.status, id, config?.isRandom]);
 
-  // Auto-reveal secret if the logged-in user has already won this game.
-  // Fires once config is loaded (ensures game exists) and user is known.
+  // Auto-reveal: check localStorage first (works for everyone), then fall back
+  // to D1 for logged-in users (cross-device sync). Saves to localStorage whenever
+  // D1 returns a hit so future visits on this device are instant.
   useEffect(() => {
-    if (!id || !user || !config) return;
+    if (!id || !config) return;
+
+    const stored = getWonGame(id);
+    if (stored) {
+      setPreviousSecret(stored);
+      return;
+    }
+
+    if (!user) return;
     api
       .getPreviousSecret(id)
-      .then(({ secret: s }) => setPreviousSecret(s))
-      .catch(() => {}); // 401 = not logged in, 403 = not won yet — both silent
+      .then(({ secret: s }) => {
+        setWonGame(id, s);
+        setPreviousSecret(s);
+      })
+      .catch(() => {});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, user?.steamId, config?.id]);
+
+  // Persist secret to localStorage whenever a fresh win produces one.
+  // Covers both random and non-random games — the two win effects both
+  // set `secret`, so this single watcher is enough.
+  useEffect(() => {
+    if (secret !== null && id) {
+      setWonGame(id, secret);
+    }
+  }, [secret, id]);
 
   function handleCopyLink() {
     navigator.clipboard.writeText(window.location.href).then(() => {
