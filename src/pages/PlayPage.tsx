@@ -6,7 +6,9 @@ import { api } from "@/services/api";
 import Board from "@/components/game/Board";
 import StatusBar from "@/components/game/StatusBar";
 import Leaderboard from "@/components/game/Leaderboard";
+import BackgroundPicker from "@/components/game/BackgroundPicker";
 import AdSlot from "@/components/AdSlot";
+import { useBackground } from "@/hooks/useBackground";
 import { Button } from "@/components/ui/button";
 import { getWonGame, setWonGame } from "@/lib/wonGames";
 import type { GameConfig, GameConfigResponse } from "@/types/game";
@@ -44,6 +46,8 @@ export default function PlayPage() {
   const [copiedSecret, setCopiedSecret] = useState(false);
   const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const copySecretTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const [bg, setBg] = useBackground();
 
   const config = useMemo(
     () => (configResponse ? responseToConfig(configResponse) : null),
@@ -163,6 +167,7 @@ export default function PlayPage() {
   }
 
   return (
+    <div className="min-h-full w-full transition-colors duration-300" style={{ backgroundColor: bg.color }}>
     <div className="flex flex-col items-center px-3 py-3 sm:py-4 gap-3 sm:gap-4 max-w-2xl mx-auto w-full">
       {/* Creator attribution + copy link */}
       <div className="flex items-center justify-between w-full">
@@ -192,6 +197,11 @@ export default function PlayPage() {
             </>
           )}
         </button>
+      </div>
+
+      {/* Background picker */}
+      <div className="w-full flex justify-end">
+        <BackgroundPicker value={bg} onChange={setBg} />
       </div>
 
       {/* Ad slot — above the board */}
@@ -310,6 +320,7 @@ export default function PlayPage() {
         </div>
       )}
 
+    </div>
     </div>
   );
 }
