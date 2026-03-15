@@ -118,3 +118,23 @@ Donated images use a separate folder and a separate helper to keep them distinct
 4. Once `DONATED_POOL` has at least as many images as the maximum pairs setting (18), the "SG Donated Art" theme will unlock automatically.
 
 The pool files live in `src/data/imagePool.ts`. Images are served as static assets from `public/`; no build step needed for adding files there.
+
+---
+
+## Changelog
+
+### v1.0 — 2026-03-15
+
+Initial public release.
+
+- Memory card game with configurable board size (4–18 pairs)
+- Random and Fixed board modes
+- Mistake limit and time limit options (both optional, unlimited by default)
+- Secrets stored server-side, returned only after a valid win
+- Steam OpenID login — leaderboard and personal best times for random boards
+- Auto-reveal secret for returning winners
+- Card Theme selector: Generic Icons (109 icons from game-icons.net) and SG Donated Art (locked, pending community donations)
+- Copy game link and Copy secret buttons
+- Game history page (created games + played games)
+- Privacy policy
+- AdSense integration (pending approval)
