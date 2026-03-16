@@ -28,6 +28,7 @@ export interface Card {
   /** Both cards in a pair share the same pairId */
   pairId: number;
   status: CardStatus;
+  isGeneric?: boolean; // Added for conditional styling based on theme
 }
 
 // ---------------------------------------------------------------------------

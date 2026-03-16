@@ -10,6 +10,7 @@ import BackgroundPicker from "@/components/game/BackgroundPicker";
 import AdSlot from "@/components/AdSlot";
 import { useBackground } from "@/hooks/useBackground";
 import { useCardBackground } from "@/hooks/useCardBackground";
+import { useTheme } from "@/hooks/useTheme";
 import { Button } from "@/components/ui/button";
 import { getWonGame, setWonGame } from "@/lib/wonGames";
 import { formatTime } from "@/lib/formatTime";
@@ -53,6 +54,7 @@ export default function PlayPage() {
 
   const [bg, setBg] = useBackground();
   const [cardBg, setCardBg] = useCardBackground();
+  const [theme] = useTheme();
 
   const config = useMemo(
     () => (configResponse ? responseToConfig(configResponse) : null),
@@ -240,7 +242,7 @@ export default function PlayPage() {
       )}
 
       {/* Board */}
-      <Board cards={state.cards} pairs={config.pairs} onCardClick={flipCard} />
+      <Board cards={state.cards} pairs={config.pairs} onCardClick={flipCard} currentTheme={theme} />
 
       {/* Previous-win reveal — returning winner, hasn't played this session */}
       {previousSecret && !previousSecretDismissed && state.status !== "won" && (

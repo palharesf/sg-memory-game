@@ -15,8 +15,8 @@ function buildCards(
   const selected = pool.slice(0, pairs);
 
   const doubled: Omit<Card, "id">[] = selected.flatMap((poolImage, pairId) => [
-    { image: poolImage.path, pairId, status: "hidden" },
-    { image: poolImage.path, pairId, status: "hidden" },
+    { image: poolImage.path, pairId, status: "hidden", isGeneric: theme === "generic" },
+    { image: poolImage.path, pairId, status: "hidden", isGeneric: theme === "generic" },
   ]);
 
   return shuffleFn(doubled).map((card, id) => ({ ...card, id }));

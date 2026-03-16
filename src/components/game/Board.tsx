@@ -1,12 +1,13 @@
 import { memo, useEffect, useRef } from "react";
 import Card from "./Card";
 import { getGridDimensions } from "@/game/constants";
-import type { Card as CardType } from "@/types/game";
+import type { Card as CardType, GameTheme } from "@/types/game";
 
 interface BoardProps {
   cards: CardType[];
   pairs: number;
   onCardClick: (id: number) => void;
+  currentTheme: GameTheme;
 }
 
 /**
@@ -15,7 +16,7 @@ interface BoardProps {
  * Uses CSS custom property --card-size to drive both card dimensions and gap.
  */
 // memo: prevents re-renders on every timer tick — cards only change on flip/match
-const Board = memo(function Board({ cards, pairs, onCardClick }: BoardProps) {
+const Board = memo(function Board({ cards, pairs, onCardClick, currentTheme }: BoardProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const { rows, cols } = getGridDimensions(pairs);
 
@@ -65,7 +66,7 @@ const Board = memo(function Board({ cards, pairs, onCardClick }: BoardProps) {
         }
       >
         {cards.map((card) => (
-          <Card key={card.id} card={card} onClick={onCardClick} />
+          <Card key={card.id} card={card} onClick={onCardClick} currentTheme={currentTheme} />
         ))}
       </div>
     </div>
