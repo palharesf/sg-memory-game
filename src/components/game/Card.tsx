@@ -5,6 +5,7 @@ interface CardProps {
   card: CardType;
   onClick: (id: number) => void;
   currentTheme: GameTheme;
+  colorize: boolean;
 }
 
 /**
@@ -12,7 +13,7 @@ interface CardProps {
  * Front = card back design (face-down), Back = image (face-up).
  * Uses rotateY transform — GPU-accelerated via transform-style: preserve-3d.
  */
-export default function Card({ card, onClick, currentTheme }: CardProps) {
+export default function Card({ card, onClick, currentTheme, colorize }: CardProps) {
   const isRevealed = card.status === "flipped" || card.status === "matched";
   const isMatched = card.status === "matched";
 
@@ -60,7 +61,7 @@ export default function Card({ card, onClick, currentTheme }: CardProps) {
             draggable={false}
             className="w-full h-full object-cover rounded"
             style={
-              currentTheme === "generic" && card.isGeneric
+              colorize && currentTheme === "generic" && card.isGeneric
                 ? { filter: `brightness(0) saturate(100%) invert(1) sepia(1) saturate(10000%) hue-rotate(${hueRotate}deg)` }
                 : undefined
             }

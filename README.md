@@ -128,6 +128,7 @@ The pool files live in `src/data/imagePool.ts`. Images are served as static asse
 ### v1.2 — 2026-03-16
 
 - Added accessible colors for play and card background pickers (m0r1arty)
+- Generic icon recoloring is now optional — "Recolor icons" toggle on the play page, on by default (RePlayBe)
 
 ### v1.1 — 2026-03-15
 

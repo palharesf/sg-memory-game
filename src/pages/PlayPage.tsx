@@ -10,6 +10,7 @@ import BackgroundPicker from "@/components/game/BackgroundPicker";
 import AdSlot from "@/components/AdSlot";
 import { useBackground } from "@/hooks/useBackground";
 import { useCardBackground } from "@/hooks/useCardBackground";
+import { useCardColorize } from "@/hooks/useCardColorize";
 import { useTheme } from "@/hooks/useTheme";
 import { Button } from "@/components/ui/button";
 import { getWonGame, setWonGame } from "@/lib/wonGames";
@@ -54,6 +55,7 @@ export default function PlayPage() {
 
   const [bg, setBg] = useBackground();
   const [cardBg, setCardBg] = useCardBackground();
+  const [colorize, setColorize] = useCardColorize();
   const [theme] = useTheme();
 
   const config = useMemo(
@@ -229,6 +231,17 @@ export default function PlayPage() {
       <div className="w-full flex flex-wrap justify-end gap-x-4 gap-y-1.5">
         <BackgroundPicker value={bg} onChange={setBg} label="Area:" />
         <BackgroundPicker value={cardBg} onChange={setCardBg} label="Cards:" />
+        {theme === "generic" && (
+          <label className="flex items-center gap-1.5 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={colorize}
+              onChange={(e) => setColorize(e.target.checked)}
+              className="w-3.5 h-3.5 accent-[var(--color-primary)]"
+            />
+            <span className="text-xs text-[var(--color-text-muted)]">Recolor icons</span>
+          </label>
+        )}
       </div>
 
       {/* Ad slot — above the board */}
@@ -242,7 +255,7 @@ export default function PlayPage() {
       )}
 
       {/* Board */}
-      <Board cards={state.cards} pairs={config.pairs} onCardClick={flipCard} currentTheme={theme} />
+      <Board cards={state.cards} pairs={config.pairs} onCardClick={flipCard} currentTheme={theme} colorize={colorize} />
 
       {/* Previous-win reveal — returning winner, hasn't played this session */}
       {previousSecret && !previousSecretDismissed && state.status !== "won" && (
