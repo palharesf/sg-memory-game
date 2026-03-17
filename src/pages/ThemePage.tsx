@@ -86,10 +86,10 @@ export default function ThemePage() {
         />
         <ThemeCard
           name="SG Donated Art"
-          description="Community-contributed artwork — accepting donations now"
+          description={`Community-contributed artwork — ${DONATED_POOL.length}/18 images collected`}
           themeKey="donated"
           active={theme === "donated"}
-          locked={DONATED_POOL.length === 0}
+          locked={DONATED_POOL.length < 18}
           onSelect={() => setTheme("donated")}
         />
       </div>
