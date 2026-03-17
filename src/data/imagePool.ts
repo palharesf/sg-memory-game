@@ -65,6 +65,11 @@ export const AUTHORS: Record<string, Author> = {
     displayName: "Various Artists",
     url: "https://game-icons.net",
   },
+  "yamaraus": {
+    key: "yamaraus",
+    displayName: "Yamaraus",
+    url: "https://www.steamgifts.com/user/Yamaraus",
+  },
 };
 
 // ---------------------------------------------------------------------------
@@ -344,6 +349,21 @@ void donatedImg;
  * To add: drop 512×512 transparent PNG into public/images/donated/, add entry
  * below using donatedImg(), and add the donor to AUTHORS above.
  */
-export const DONATED_POOL: PoolImage[] = [];
+export const DONATED_POOL: PoolImage[] = [
+	donatedImg("yamaraus", "ash_512.png"),
+	donatedImg("yamaraus", "blinky_512.png"),
+	donatedImg("yamaraus", "sky_512.png"),
+	donatedImg("yamaraus", "tank_512.png"),
+	donatedImg("yamaraus", "barbie_512.png"),
+	donatedImg("yamaraus", "ginger_512.png"),
+	donatedImg("yamaraus", "punkin_512.png"),
+	donatedImg("yamaraus", "red_512.png"),
+	donatedImg("yamaraus", "sunny_512.png"),
+	donatedImg("yamaraus", "mosquito_512.png"),
+	donatedImg("yamaraus", "larva_512.png"),
+	donatedImg("yamaraus", "aphid_512.png"),
+	donatedImg("yamaraus", "bumblebee_512.png"),
+	donatedImg("yamaraus", "swallowtail_512.png"),
+];
 
 export const DONATED_POOL_SIZE = DONATED_POOL.length;
