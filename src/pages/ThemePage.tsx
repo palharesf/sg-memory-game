@@ -153,8 +153,8 @@ export default function ThemePage() {
         })}
       </div>
 
-      {/* SG Donated Art — locked */}
-      <div className="space-y-3 opacity-50">
+      {/* SG Donated Art */}
+      <div className="space-y-6">
         <div>
           <h2 className="text-base font-semibold text-[var(--color-text-bright)] mb-0.5">SG Donated Art</h2>
           <p className="text-xs text-[var(--color-text-muted)]">
@@ -170,7 +170,53 @@ export default function ThemePage() {
             .
           </p>
         </div>
-        <p className="text-sm text-[var(--color-text-muted)] italic">No images yet — be the first to contribute!</p>
+        {DONATED_POOL.length === 0 ? (
+          <p className="text-sm text-[var(--color-text-muted)] italic">No images yet — be the first to contribute!</p>
+        ) : (
+          Object.entries(
+            DONATED_POOL.reduce<Record<string, typeof DONATED_POOL>>((acc, img) => {
+              (acc[img.authorKey] ??= []).push(img);
+              return acc;
+            }, {})
+          ).map(([key, images]) => {
+            const author = AUTHORS[key]!;
+            return (
+              <div key={key}>
+                <div className="flex items-baseline gap-2 mb-3">
+                  <h3 className="text-sm font-medium text-[var(--color-text)]">{author.displayName}</h3>
+                  {author.url && (
+                    <a
+                      href={author.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-[var(--color-primary)] hover:underline"
+                    >
+                      {author.url}
+                    </a>
+                  )}
+                  <span className="text-xs text-[var(--color-text-muted)] ml-auto">
+                    {images.length} image{images.length !== 1 ? "s" : ""}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {images.map((img) => (
+                    <div
+                      key={img.path}
+                      className="w-10 h-10 rounded bg-[var(--color-bg-elevated)] flex items-center justify-center p-1"
+                      title={img.name}
+                    >
+                      <img
+                        src={img.path}
+                        alt={img.name}
+                        className="w-full h-full object-contain opacity-70 hover:opacity-100 transition-opacity"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })
+        )}
       </div>
     </div>
   );
