@@ -2,7 +2,7 @@
 // Game configuration — stored in D1, encoded in the URL as a short ID
 // ---------------------------------------------------------------------------
 
-export type GameTheme = 'generic' | 'donated';
+export type GameTheme = 'generic' | 'insects' | 'donated';
 
 export interface GameConfig {
   id: string;

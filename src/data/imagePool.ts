@@ -353,29 +353,38 @@ function donatedImg(author: string, file: string): PoolImage {
   return { path: `${DONATED_BASE}/${file}`, authorKey: author, name };
 }
 
-// Suppress unused warning until first donation arrives
-void donatedImg;
+/**
+ * Insects theme — Yamaraus's donated art set.
+ * Add new files to public/images/donated/ and list them here.
+ */
+export const INSECTS_POOL: PoolImage[] = [
+  donatedImg("yamaraus", "ash_512.png"),
+  donatedImg("yamaraus", "blinky_512.png"),
+  donatedImg("yamaraus", "sky_512.png"),
+  donatedImg("yamaraus", "tank_512.png"),
+  donatedImg("yamaraus", "barbie_512.png"),
+  donatedImg("yamaraus", "ginger_512.png"),
+  donatedImg("yamaraus", "punkin_512.png"),
+  donatedImg("yamaraus", "red_512.png"),
+  donatedImg("yamaraus", "sunny_512.png"),
+  donatedImg("yamaraus", "mosquito_512.png"),
+  donatedImg("yamaraus", "larva_512.png"),
+  donatedImg("yamaraus", "aphid_512.png"),
+  donatedImg("yamaraus", "bumblebee_512.png"),
+  donatedImg("yamaraus", "swallowtail_512.png"),
+  donatedImg("yamaraus", "ant_guard_512.png"),
+  donatedImg("yamaraus", "ant_male_512.png"),
+  donatedImg("yamaraus", "ant_queen_512.png"),
+  donatedImg("yamaraus", "ant_worker_512.png"),
+  donatedImg("yamaraus", "pea_aphid_512.png"),
+  donatedImg("yamaraus", "tree_ant_worker_512.png"),
+];
 
 /**
- * Community-donated art pool — locked until enough art is collected.
+ * Community-donated art pool — for future multi-donor contributions.
  * To add: drop 512×512 transparent PNG into public/images/donated/, add entry
  * below using donatedImg(), and add the donor to AUTHORS above.
  */
-export const DONATED_POOL: PoolImage[] = [
-	donatedImg("yamaraus", "ash_512.png"),
-	donatedImg("yamaraus", "blinky_512.png"),
-	donatedImg("yamaraus", "sky_512.png"),
-	donatedImg("yamaraus", "tank_512.png"),
-	donatedImg("yamaraus", "barbie_512.png"),
-	donatedImg("yamaraus", "ginger_512.png"),
-	donatedImg("yamaraus", "punkin_512.png"),
-	donatedImg("yamaraus", "red_512.png"),
-	donatedImg("yamaraus", "sunny_512.png"),
-	donatedImg("yamaraus", "mosquito_512.png"),
-	donatedImg("yamaraus", "larva_512.png"),
-	donatedImg("yamaraus", "aphid_512.png"),
-	donatedImg("yamaraus", "bumblebee_512.png"),
-	donatedImg("yamaraus", "swallowtail_512.png"),
-];
+export const DONATED_POOL: PoolImage[] = [];
 
 export const DONATED_POOL_SIZE = DONATED_POOL.length;

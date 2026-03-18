@@ -1,5 +1,6 @@
 import { shuffle, seededShuffle } from "./shuffle";
-import { POOL, DONATED_POOL } from "@/data/imagePool";
+import { POOL } from "@/data/imagePool";
+import { getTheme } from "@/data/themes";
 import type { Card, GameTheme } from "@/types/game";
 
 function buildCards(
@@ -7,9 +8,9 @@ function buildCards(
   theme: GameTheme,
   shuffleFn: <T>(arr: T[]) => T[]
 ): Card[] {
-  // Use donated pool only if it has enough images; otherwise fall back to generic.
-  const source =
-    theme === "donated" && DONATED_POOL.length >= pairs ? DONATED_POOL : POOL;
+  const themeDef = getTheme(theme);
+  // Fall back to generic pool if this theme doesn't have enough images.
+  const source = themeDef.pool.length >= pairs ? themeDef.pool : POOL;
 
   const pool = shuffleFn([...source]);
   const selected = pool.slice(0, pairs);
