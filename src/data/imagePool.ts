@@ -201,6 +201,14 @@ export const POOL: PoolImage[] = [
   img("delapouite", "t-brick.png"),
   img("delapouite", "wooden-crate.png"),
   img("delapouite", "z-brick.png"),
+  img("delapouite", "brick-wall.png"),
+  img("delapouite", "bullet-bill.png"),
+  img("delapouite", "carnivorous-plant.png"),
+  img("delapouite", "fire-flower.png"),
+  img("delapouite", "round-star.png"),
+  img("delapouite", "thwomp.png"),
+  img("delapouite", "tortoise.png"),
+  img("delapouite", "warp-pipe.png"),
 
   // lorc
   // img("lorc", "ace.png"),
@@ -278,6 +286,10 @@ export const POOL: PoolImage[] = [
   img("lorc", "meat.png"),
   img("lorc", "pocket-bow.png"),
   img("lorc", "unlit-bomb.png"),
+  img("lorc", "falling-leaf.png"),
+  img("lorc", "fire-tail.png"),
+  img("lorc", "super-mushroom.png"),
+  img("lorc", "turtle-shell.png"),
 
   // lord-berandas
   // img("lord-berandas", "holosphere.png"),
