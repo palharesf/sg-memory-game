@@ -33,7 +33,7 @@ A few things you can tune when creating:
 - **Board mode — Random or Fixed:**
   - *Random* reshuffles card positions on every attempt, so no one can share a solution or memorize the layout between runs. Supports a leaderboard, personal best times, mistake limits, and time limits.
   - *Fixed* keeps the same layout every time. No reshuffling, no competitive pressure, no leaderboard, no mistake or time limits. Basically, unfun, but that's what I understand some player want so have a field day, please. Good for people who complain about fairness without understanding trade-offs. Yeah it's that boring and sour, sue me.
-- **Card theme:** Choose between *Generic Icons* (a pool of gaming symbols, available now) and *SG Donated Art* (community-contributed art, coming once enough pieces are donated — see below).
+- **Card theme:** Choose your visual theme on the [Card Theme page](https://sg-memory-game.pages.dev/theme). *Generic Icons* is available immediately; additional themes unlock once enough art is collected.
 - **Mistake limit:** How many wrong flips before game over. Leave it empty for no limit.
 - **Time limit:** Seconds to beat the board. Leave it empty for no timer.
 
@@ -52,7 +52,7 @@ Signed-in players can visit *My Games* to see every game they've created and eve
 ## I want to add an image for the project! Can I?
 Please do! Remember when you created art for the Advent Calendar? Or for a puzzle? Or for fun? I would love if you donated it to this project! I'll reserve a comment in the thread for art donation, feel free to comment there if you want to donate something you created. Ideally, 512x512 transparent PNG. If I use in the project I'll give you attribution for it, and that's it. Also if there's too much interest in art donation, I might curate which ones will actually show up in the game (or keep a massive list, who knows), so by donating donating your art you agree to that.
 
-By the way - we work with an image pool. The current image pool can be seen [here](https://sg-memory-game.pages.dev/theme). Once we have 18 user submissions, the community donation theme will be unlocked and you can choose it for your games.
+By the way - we work with image pools, one per theme. The current themes and their pools can be seen [here](https://sg-memory-game.pages.dev/theme). Each theme requires 18 images to unlock. The *Insects* theme, donated by Yamaraus, is already available!
 
 Comment for donations [here](https://www.steamgifts.com/discussion/xbMXq/sg-memory-game#aepUQi8)
 
@@ -102,28 +102,47 @@ You'll need a `wrangler.toml` pointing at a D1 database and a `STEAM_API_KEY` se
 
 3. **Author keys** must match exactly between the `img()` call and the `AUTHORS` map — the key is used for grouping attributions on the Card Theme page.
 
-**Adding Donated Art:**
+**Adding a new theme:**
 
-Donated images use a separate folder and a separate helper to keep them distinct from game-icons.net assets.
+Themes are defined in `src/data/themes.ts` as entries in `THEME_REGISTRY`. Adding a theme requires:
 
-1. Drop the 512×512 transparent PNG into `public/images/donated/{filename}.png`
-2. Add the donor to the `AUTHORS` map in `src/data/imagePool.ts` (use their SteamGifts URL):
+1. Drop 512×512 transparent PNGs into `public/images/donated/{filename}.png`
+2. Add the donor to the `AUTHORS` map in `src/data/imagePool.ts`:
    ```ts
    "adam1224": { key: "adam1224", displayName: "adam1224", url: "https://www.steamgifts.com/user/adam1224" },
    ```
-3. Add an entry to `DONATED_POOL` using `donatedImg()` (not `img()`):
+3. Create a named pool in `src/data/imagePool.ts` using `donatedImg()`:
    ```ts
-   export const DONATED_POOL: PoolImage[] = [
+   export const MY_POOL: PoolImage[] = [
      donatedImg("adam1224", "my-artwork.png"),
    ];
    ```
-4. Once `DONATED_POOL` has at least as many images as the maximum pairs setting (18), the "SG Donated Art" theme will unlock automatically.
+4. Add one entry to `THEME_REGISTRY` in `src/data/themes.ts`:
+   ```ts
+   {
+     key: "my-theme",
+     name: "My Theme",
+     cardDescription: (pool) => `${pool.length} images`,
+     pool: MY_POOL,
+     minPoolSize: 18,   // unlock threshold; 0 = always available
+     invertImages: false,
+   },
+   ```
+
+That's it — ThemePage, the board generator, and theme validation all pick it up automatically.
 
 The pool files live in `src/data/imagePool.ts`. Images are served as static assets from `public/`; no build step needed for adding files there.
 
 ---
 
 ## Changelog
+
+### v1.3 — 2026-03-18
+
+- Extensible theme registry (`src/data/themes.ts`) — adding a new theme now requires a single entry in `THEME_REGISTRY`; ThemePage, board generator, and theme validation all update automatically
+- **Insects theme** — 20 hand-drawn insect images donated by [Yamaraus](https://www.steamgifts.com/user/Yamaraus), now unlocked and selectable
+- Generic icon pool expanded with 20 new icons (Mario/game-themed delapouite set + lorc additions)
+- SG Community Art theme preserved as a separate slot for future multi-donor contributions
 
 ### v1.2 — 2026-03-16
 
