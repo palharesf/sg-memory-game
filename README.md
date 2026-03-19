@@ -137,6 +137,10 @@ The pool files live in `src/data/imagePool.ts`. Images are served as static asse
 
 ## Changelog
 
+### v1.4 — 2026-03-19
+
+- Fixed recolored icon pairs always sharing the same color — previously each card got a random hue independently, so matching pairs could look different
+
 ### v1.3 — 2026-03-18
 
 - Extensible theme registry (`src/data/themes.ts`) — adding a new theme now requires a single entry in `THEME_REGISTRY`; ThemePage, board generator, and theme validation all update automatically
