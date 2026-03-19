@@ -17,7 +17,9 @@ export default function Card({ card, onClick, currentTheme, colorize }: CardProp
   const isRevealed = card.status === "flipped" || card.status === "matched";
   const isMatched = card.status === "matched";
 
-  const hueRotate = useMemo(() => Math.floor(Math.random() * 360), [card.image]);
+  // Deterministic hue per pair so both cards always share the same color.
+  // Golden angle (137°) gives good visual spread across consecutive pairIds.
+  const hueRotate = useMemo(() => (card.pairId * 137) % 360, [card.pairId]);
 
 
   return (
