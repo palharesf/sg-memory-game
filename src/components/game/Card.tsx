@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import type { Card as CardType, GameTheme } from "@/types/game";
+import { safeIconHue } from "@/lib/safeIconHue";
 
 interface CardProps {
   card: CardType;
@@ -19,7 +20,9 @@ export default function Card({ card, onClick, currentTheme, colorize }: CardProp
 
   // Deterministic hue per pair so both cards always share the same color.
   // Golden angle (137°) gives good visual spread across consecutive pairIds.
-  const hueRotate = useMemo(() => (card.pairId * 137) % 360, [card.pairId]);
+  // safeIconHue nudges any value that would produce a color close to one of
+  // the selectable background colors, keeping icons always distinguishable.
+  const hueRotate = useMemo(() => safeIconHue((card.pairId * 137) % 360), [card.pairId]);
 
 
   return (
