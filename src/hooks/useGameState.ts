@@ -145,6 +145,10 @@ export function useGameState(config: GameConfig | null) {
       setState((prev) => {
         if (!prev.boardLocked) return prev;
 
+        // Timer may have expired while the mismatch delay was in-flight.
+        // Don't transition back to "playing" — keep the lost status.
+        if (prev.status === "lost") return { ...prev, boardLocked: false, flippedIds: [] };
+
         const [idA, idB] = prev.flippedIds as [number, number];
         const newMistakes = prev.mistakesMade + 1;
         const lost = config ? isLost(newMistakes, config.mistakes ?? null) : false;
