@@ -137,9 +137,14 @@ The pool files live in `src/data/imagePool.ts`. Images are served as static asse
 
 ## Changelog
 
+### v1.5 — 2026-03-19
+
+- Fixed a race condition where spamming clicks right as the timer expired could cause "Game Over" to flash and then dismiss, restarting the clock and allowing the game to be completed past the time limit (kiseli)
+- Recolored icons now avoid hues that are too close to any of the selectable background colors, preventing icons from blending into the background (kiseli)
+
 ### v1.4 — 2026-03-19
 
-- Fixed recolored icon pairs always sharing the same color — previously each card got a random hue independently, so matching pairs could look different
+- Fixed recolored icon pairs always sharing the same color — previously each card got a random hue independently, so matching pairs could look different (RePlayBe)
 
 ### v1.3 — 2026-03-18
 
