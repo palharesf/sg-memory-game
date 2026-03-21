@@ -137,10 +137,11 @@ The pool files live in `src/data/imagePool.ts`. Images are served as static asse
 
 ## Changelog
 
-### v1.5 — 2026-03-19
+### v1.5 — 2026-03-20
 
 - Fixed a race condition where spamming clicks right as the timer expired could cause "Game Over" to flash and then dismiss, restarting the clock and allowing the game to be completed past the time limit (kiseli)
 - Recolored icons now avoid hues that are too close to any of the selectable background colors, preventing icons from blending into the background (kiseli)
+- Improved mobile layout of the Theme page — theme selector cards now use a fixed 3-column grid (no more clipping), badges moved to inline flow, descriptions capped to 3 lines; author attribution rows split into name/count on top and URL below so long URLs don't break the layout
 
 ### v1.4 — 2026-03-19
 
