@@ -157,7 +157,7 @@ export default function ThemePage() {
       </div>
 
       {/* Theme selector */}
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
         {THEME_REGISTRY.map((def) => {
           const locked = def.pool.length < def.minPoolSize;
           return (
