@@ -190,12 +190,19 @@ function wonGameRow(entry: HistoryEntry) {
   );
 }
 
-function createdGameRow(game: CreatedGame) {
+function createdGameRow(
+  game: CreatedGame,
+  lockedAt: number | null,
+  onToggleLock: (game: CreatedGame, lock: boolean) => void,
+  toggling: boolean,
+) {
   const mode = game.isRandom ? "Random" : "Fixed";
   const constraints = [
     game.mistakes != null ? `${game.mistakes} mistakes` : null,
     game.timeLimit != null ? `${game.timeLimit}s` : null,
   ].filter(Boolean).join(", ") || "—";
+
+  const isLocked = lockedAt !== null;
 
   return (
     <>
@@ -210,6 +217,22 @@ function createdGameRow(game: CreatedGame) {
       <td className="px-4 py-3 text-[var(--color-text-muted)]">{game.pairs} pairs · {mode}</td>
       <td className="px-4 py-3 text-[var(--color-text-muted)]">{constraints}</td>
       <td className="px-4 py-3 text-[var(--color-text-muted)]">{formatDate(game.createdAt)}</td>
+      <td className="px-4 py-3">
+        {isLocked ? (
+          <span className="text-xs text-[var(--color-warning)]">Ended</span>
+        ) : (
+          <span className="text-xs text-[var(--color-text-muted)]">Active</span>
+        )}
+      </td>
+      <td className="px-4 py-3">
+        <button
+          disabled={toggling}
+          onClick={() => onToggleLock(game, !isLocked)}
+          className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          {isLocked ? "Reopen" : "End"}
+        </button>
+      </td>
     </>
   );
 }
@@ -220,6 +243,18 @@ function createdGameRow(game: CreatedGame) {
 
 export default function HistoryPage() {
   const { user, loading: authLoading } = useAuth();
+  const [lockOverrides, setLockOverrides] = useState<Record<string, number | null>>({});
+  const [toggling, setToggling] = useState<Record<string, boolean>>({});
+
+  function handleToggleLock(game: CreatedGame, lock: boolean) {
+    setToggling((prev) => ({ ...prev, [game.id]: true }));
+    api.lockGame(game.id, lock)
+      .then(({ lockedAt }) => {
+        setLockOverrides((prev) => ({ ...prev, [game.id]: lockedAt }));
+      })
+      .catch(() => {})
+      .finally(() => setToggling((prev) => ({ ...prev, [game.id]: false })));
+  }
 
   if (authLoading) {
     return (
@@ -257,8 +292,15 @@ export default function HistoryPage() {
       <Section<CreatedGame>
         title="Games Created"
         fetchPage={(p) => api.getMyGames(p)}
-        columns={["Game", "Board", "Limits", "Created"]}
-        renderRow={createdGameRow}
+        columns={["Game", "Board", "Limits", "Created", "Status", ""]}
+        renderRow={(game) =>
+          createdGameRow(
+            game,
+            game.id in lockOverrides ? lockOverrides[game.id] : game.lockedAt,
+            handleToggleLock,
+            toggling[game.id] ?? false,
+          )
+        }
       />
 
       <Section<HistoryEntry>

@@ -137,6 +137,10 @@ The pool files live in `src/data/imagePool.ts`. Images are served as static asse
 
 ## Changelog
 
+### v1.6 — 2026-03-24
+
+- Creators can now mark their games as **ended** from the My Games page — players visiting an ended game see a warning that a reward may no longer be available. Games can be reopened at any time (aez76)
+
 ### v1.5 — 2026-03-20
 
 - Fixed a race condition where spamming clicks right as the timer expired could cause "Game Over" to flash and then dismiss, restarting the clock and allowing the game to be completed past the time limit (kiseli)

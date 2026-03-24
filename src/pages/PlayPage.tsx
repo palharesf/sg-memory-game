@@ -227,6 +227,15 @@ export default function PlayPage() {
         </button>
       </div>
 
+      {/* Ended banner */}
+      {configResponse?.lockedAt && (
+        <div className="w-full rounded-lg border border-[var(--color-warning)]/40 bg-[var(--color-warning)]/10 px-4 py-3">
+          <p className="text-sm text-[var(--color-warning)]">
+            This game has been marked as ended by its creator. A reward may no longer be available.
+          </p>
+        </div>
+      )}
+
       {/* Background + card colour pickers */}
       <div className="w-full flex flex-wrap justify-end gap-x-4 gap-y-1.5">
         <BackgroundPicker value={bg} onChange={setBg} label="Area:" />

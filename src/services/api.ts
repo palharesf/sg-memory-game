@@ -72,6 +72,13 @@ export const api = {
   getMyGames: (page = 1) =>
     request<PaginatedResult<CreatedGame>>(`/my-games?page=${page}`),
 
+  /** Lock or unlock a game (creator only) */
+  lockGame: (id: string, locked: boolean) =>
+    request<{ lockedAt: number | null }>(`/games/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify({ locked }),
+    }),
+
   /** Redirect URL to start Steam OpenID flow */
   steamLoginUrl: () => `${BASE}/auth/steam`,
 

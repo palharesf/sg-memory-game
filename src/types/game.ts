@@ -77,6 +77,7 @@ export interface GameConfigResponse {
   creatorUsername: string | null;
   creatorAvatar: string | null;
   createdAt: number;
+  lockedAt: number | null;
 }
 
 export interface CompleteGameRequest {
@@ -112,6 +113,7 @@ export interface CreatedGame {
   timeLimit: number | null;
   isRandom: boolean;
   createdAt: number;
+  lockedAt: number | null;
 }
 
 export interface PaginatedResult<T> {
