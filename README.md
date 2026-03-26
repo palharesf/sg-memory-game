@@ -137,6 +137,10 @@ The pool files live in `src/data/imagePool.ts`. Images are served as static asse
 
 ## Changelog
 
+### v1.7 — 2026-03-25
+
+- Secrets that are SteamGifts or SGTools URLs are now rendered as clickable links in the win overlay and previous-win banner (PapaSmok, WaxWorm)
+
 ### v1.6 — 2026-03-24
 
 - Creators can now mark their games as **ended** from the My Games page — players visiting an ended game see a warning that a reward may no longer be available. Games can be reopened at any time (aez76)

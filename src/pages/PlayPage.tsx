@@ -17,6 +17,33 @@ import { getWonGame, setWonGame } from "@/lib/wonGames";
 import { formatTime } from "@/lib/formatTime";
 import type { GameConfig, GameConfigResponse } from "@/types/game";
 
+const LINKABLE_PREFIXES = [
+  "https://www.steamgifts.com",
+  "https://steamgifts.com",
+  "https://www.sgtools.info",
+  "https://sgtools.info",
+];
+
+function SecretValue({ value }: { value: string }) {
+  const isLink = LINKABLE_PREFIXES.some((prefix) => value.startsWith(prefix));
+  return (
+    <p className="font-mono text-[var(--color-text-bright)] break-all bg-[var(--color-bg-elevated)] rounded px-3 py-2 select-all">
+      {isLink ? (
+        <a
+          href={value}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline text-[var(--color-primary)] hover:opacity-80"
+        >
+          {value}
+        </a>
+      ) : (
+        value
+      )}
+    </p>
+  );
+}
+
 function responseToConfig(r: GameConfigResponse): GameConfig {
   return {
     id: r.id,
@@ -272,9 +299,7 @@ export default function PlayPage() {
           <p className="text-[var(--color-success)] font-semibold text-lg">You've already solved this one!</p>
           <div className="space-y-1">
             <p className="text-xs text-[var(--color-text-muted)]">Your secret:</p>
-            <p className="font-mono text-[var(--color-text-bright)] break-all bg-[var(--color-bg-elevated)] rounded px-3 py-2 select-all">
-              {previousSecret}
-            </p>
+            <SecretValue value={previousSecret} />
           </div>
           <div className="flex gap-2 flex-wrap">
             <Button
@@ -311,9 +336,7 @@ export default function PlayPage() {
           {secret !== null ? (
             <div className="space-y-1">
               <p className="text-xs text-[var(--color-text-muted)]">Your secret:</p>
-              <p className="font-mono text-[var(--color-text-bright)] break-all bg-[var(--color-bg-elevated)] rounded px-3 py-2 select-all">
-                {secret}
-              </p>
+              <SecretValue value={secret} />
             </div>
           ) : (
             <p className="text-sm text-[var(--color-text-muted)] animate-pulse">
