@@ -80,7 +80,10 @@ export const api = {
     }),
 
   /** Redirect URL to start Steam OpenID flow */
-  steamLoginUrl: () => `${BASE}/auth/steam`,
+  steamLoginUrl: (returnTo?: string) =>
+    returnTo
+      ? `${BASE}/auth/steam?returnTo=${encodeURIComponent(returnTo)}`
+      : `${BASE}/auth/steam`,
 
   /** Log out */
   logout: () =>

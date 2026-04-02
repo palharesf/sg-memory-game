@@ -88,7 +88,7 @@ export default function Header() {
             </div>
           ) : (
             <a
-              href={api.steamLoginUrl()}
+              href={api.steamLoginUrl(window.location.pathname + window.location.search)}
               className="text-sm px-3 py-1.5 rounded bg-[var(--color-primary)] text-[var(--color-bg-base)] font-medium hover:bg-[var(--color-primary-hover)] transition-colors"
             >
               Sign in with Steam

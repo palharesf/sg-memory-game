@@ -137,6 +137,10 @@ The pool files live in `src/data/imagePool.ts`. Images are served as static asse
 
 ## Changelog
 
+### v1.8 — 2026-04-02
+
+- Signing in from a puzzle page now returns you to that puzzle after login instead of the home page (DarkDreams1)
+
 ### v1.7 — 2026-03-25
 
 - Secrets that are SteamGifts or SGTools URLs are now rendered as clickable links in the win overlay and previous-win banner (PapaSmok, WaxWorm)

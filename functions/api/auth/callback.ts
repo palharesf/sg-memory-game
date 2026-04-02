@@ -12,6 +12,13 @@ export const onRequestGet: PagesFunction<Env> = async (ctx) => {
   const url = new URL(ctx.request.url);
   const appUrl = ctx.env.APP_URL ?? "https://sg-memory-game.pages.dev";
 
+  // Validate returnTo is a safe relative path (no open-redirect)
+  const rawReturnTo = url.searchParams.get("returnTo") ?? "";
+  const returnTo =
+    rawReturnTo.startsWith("/") && !rawReturnTo.startsWith("//") && !rawReturnTo.includes("://")
+      ? rawReturnTo
+      : "/";
+
   try {
     // Verify the OpenID assertion with Steam
     const steamId = await verifyOpenId(url, appUrl).catch((e) => {
@@ -57,7 +64,7 @@ export const onRequestGet: PagesFunction<Env> = async (ctx) => {
     return new Response(null, {
       status: 302,
       headers: {
-        Location: appUrl,
+        Location: `${appUrl}${returnTo}`,
         "Set-Cookie": [
           `session=${token}`,
           "HttpOnly",

@@ -269,7 +269,7 @@ export default function HistoryPage() {
       <div className="max-w-lg mx-auto px-4 py-24 text-center space-y-4">
         <p className="text-[var(--color-text-muted)]">Sign in to see your game history.</p>
         <a
-          href={api.steamLoginUrl()}
+          href={api.steamLoginUrl("/history")}
           className="inline-block text-sm px-4 py-2 rounded bg-[var(--color-primary)] text-[var(--color-bg-base)] font-medium hover:bg-[var(--color-primary-hover)] transition-colors"
         >
           Sign in with Steam
