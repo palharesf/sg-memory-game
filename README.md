@@ -140,6 +140,8 @@ The pool files live in `src/data/imagePool.ts`. Images are served as static asse
 ### v1.9 — 2026-04-23
 
 - Fixed a race condition where clicking cards immediately after "Play Again" could interact with the new board before the flip-back animation finished — the game appeared to still show the previous layout, causing mismatched expectations on early clicks (carefree)
+- Fixed a server-side validation check that rejected legitimate fast completions — the minimum plausible time was 1 second per pair, which incorrectly blocked completions like 3 seconds on a 4-pair game; lowered to 300ms per pair (carefree)
+- Fixed the error message shown when score submission fails: if the secret is still available it is shown alongside the warning; if the request fails entirely the message no longer falsely promises a secret
 
 ### v1.8 — 2026-04-02
 

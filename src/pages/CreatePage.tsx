@@ -5,8 +5,6 @@ import { MIN_PAIRS, MAX_PAIRS, minMistakes } from "@/game/constants";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import AdSlot from "@/components/AdSlot";
-
 const DEFAULT_PAIRS = 8;
 
 export default function CreatePage() {
@@ -246,9 +244,6 @@ export default function CreatePage() {
         </Button>
       </form>
 
-      <div className="mt-10">
-        <AdSlot slot="create-bottom" className="w-full h-[90px]" />
-      </div>
 
       </div>
     </div>

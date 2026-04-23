@@ -87,6 +87,7 @@ export interface CompleteGameRequest {
 export interface CompleteGameResponse {
   secret: string;
   isNewRecord: boolean;
+  scoreSaved: boolean;
 }
 
 export interface LeaderboardEntry {

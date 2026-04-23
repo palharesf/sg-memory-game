@@ -7,7 +7,6 @@ import Board from "@/components/game/Board";
 import StatusBar from "@/components/game/StatusBar";
 import Leaderboard from "@/components/game/Leaderboard";
 import BackgroundPicker from "@/components/game/BackgroundPicker";
-import AdSlot from "@/components/AdSlot";
 import { useBackground } from "@/hooks/useBackground";
 import { useCardBackground } from "@/hooks/useCardBackground";
 import { useCardColorize } from "@/hooks/useCardColorize";
@@ -120,14 +119,15 @@ export default function PlayPage() {
     let cancelled = false;
     api
       .completeGame(id, { timeMs: state.timeElapsed })
-      .then(({ secret: s, isNewRecord: nr }) => {
+      .then(({ secret: s, isNewRecord: nr, scoreSaved }) => {
         if (cancelled) return;
         setSecret(s);
         setIsNewRecord(nr);
         setLeaderboardKey((k) => k + 1);
+        if (!scoreSaved) setSubmitError("Couldn't save your time, but here's your secret anyway.");
       })
       .catch(() => {
-        if (!cancelled) setSubmitError("Couldn't save your time, but here's your secret anyway.");
+        if (!cancelled) setSubmitError("Couldn't retrieve your secret. Please try refreshing.");
       });
     return () => { cancelled = true; };
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -280,9 +280,6 @@ export default function PlayPage() {
         )}
       </div>
 
-      {/* Ad slot — above the board */}
-      <AdSlot slot="play-top" className="w-full h-[60px]" />
-
       {/* Status bar — random games only */}
       {config.isRandom && (
         <div className="w-full">
@@ -391,8 +388,7 @@ export default function PlayPage() {
         </div>
       )}
 
-      {/* Ad slot — below the board */}
-      <AdSlot slot="play-bottom" className="w-full h-[90px]" />
+
 
       {/* Leaderboard — random games only */}
       {config.isRandom && (
