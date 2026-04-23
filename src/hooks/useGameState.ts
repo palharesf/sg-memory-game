@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { generateBoard, generateFixedBoard } from "@/game/boardGenerator";
 import { shouldIgnoreClick, isMatch, isWon, isLost } from "@/game/rules";
-import { MISMATCH_DELAY_MS } from "@/game/constants";
+import { MISMATCH_DELAY_MS, CARD_FLIP_DURATION_MS } from "@/game/constants";
 import { useTheme } from "@/hooks/useTheme";
 import type { GameState, GameConfig } from "@/types/game";
 
@@ -18,6 +18,12 @@ const initialState = (): GameState => ({
 export function useGameState(config: GameConfig | null) {
   const [theme] = useTheme();
   const [state, setState] = useState<GameState>(initialState);
+
+  // Blocks clicks for CARD_FLIP_DURATION_MS after a user-triggered reset so
+  // players can't interact with cards that are still mid flip-back animation.
+  const [isResetting, setIsResetting] = useState(false);
+  // Ref mirror for the synchronous check inside flipCard (avoids stale closure).
+  const isResettingRef = useRef(false);
 
   // Timer via requestAnimationFrame
   const startTimeRef = useRef<number | null>(null);
@@ -78,7 +84,8 @@ export function useGameState(config: GameConfig | null) {
   // Clean up on unmount
   useEffect(() => () => stopTimer(), [stopTimer]);
 
-  // Re-initialize when config changes
+  // Re-initialize when config or theme changes (initial load + theme swaps).
+  // Does NOT set isResetting — those are passive resets, not user-triggered.
   const initGame = useCallback(() => {
     if (!config) return;
     stopTimer();
@@ -95,8 +102,28 @@ export function useGameState(config: GameConfig | null) {
     initGame();
   }, [initGame]);
 
+  // Explicit user-triggered reset. Sets the resetting guard first so that
+  // clicks during the card flip-back CSS animation (CARD_FLIP_DURATION_MS) are
+  // ignored before the board can be interacted with again.
+  const resetGame = useCallback(() => {
+    isResettingRef.current = true;
+    setIsResetting(true);
+    initGame();
+  }, [initGame]);
+
+  // Clear the resetting guard once the flip-back animation has finished.
+  useEffect(() => {
+    if (!isResetting) return;
+    const t = setTimeout(() => {
+      isResettingRef.current = false;
+      setIsResetting(false);
+    }, CARD_FLIP_DURATION_MS);
+    return () => clearTimeout(t);
+  }, [isResetting]);
+
   // Pure state updater — no side effects inside
   const flipCard = useCallback((cardId: number) => {
+    if (isResettingRef.current) return;
     setState((prev) => {
       if (shouldIgnoreClick(prev, cardId)) return prev;
 
@@ -171,5 +198,5 @@ export function useGameState(config: GameConfig | null) {
     return () => clearTimeout(timer);
   }, [state.boardLocked, config]);
 
-  return { state, flipCard, resetGame: initGame };
+  return { state, flipCard, resetGame, isResetting };
 }

@@ -17,6 +17,9 @@ export const minMistakes = (pairs: number): number => Math.ceil(pairs / 2);
 /** How long (ms) to show a mismatched pair before flipping back */
 export const MISMATCH_DELAY_MS = 1000;
 
+/** How long (ms) to block card clicks after a reset — must match the CSS card flip transition duration */
+export const CARD_FLIP_DURATION_MS = 300;
+
 // ---------------------------------------------------------------------------
 // Grid layout — near-square grids for each pair range
 // ---------------------------------------------------------------------------

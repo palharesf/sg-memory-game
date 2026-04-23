@@ -89,7 +89,7 @@ export default function PlayPage() {
     () => (configResponse ? responseToConfig(configResponse) : null),
     [configResponse]
   );
-  const { state, flipCard, resetGame } = useGameState(config);
+  const { state, flipCard, resetGame, isResetting } = useGameState(config);
 
   // Fetch game config on mount
   useEffect(() => {
@@ -290,8 +290,10 @@ export default function PlayPage() {
         </div>
       )}
 
-      {/* Board */}
-      <Board cards={state.cards} pairs={config.pairs} onCardClick={flipCard} currentTheme={theme} colorize={colorize} />
+      {/* Board — pointer-events blocked while cards animate back to face-down after a reset */}
+      <div style={{ pointerEvents: isResetting ? "none" : undefined }}>
+        <Board cards={state.cards} pairs={config.pairs} onCardClick={flipCard} currentTheme={theme} colorize={colorize} />
+      </div>
 
       {/* Previous-win reveal — returning winner, hasn't played this session */}
       {previousSecret && !previousSecretDismissed && state.status !== "won" && (

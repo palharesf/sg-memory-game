@@ -137,6 +137,10 @@ The pool files live in `src/data/imagePool.ts`. Images are served as static asse
 
 ## Changelog
 
+### v1.9 — 2026-04-23
+
+- Fixed a race condition where clicking cards immediately after "Play Again" could interact with the new board before the flip-back animation finished — the game appeared to still show the previous layout, causing mismatched expectations on early clicks (carefree)
+
 ### v1.8 — 2026-04-02
 
 - Signing in from a puzzle page now returns you to that puzzle after login instead of the home page (DarkDreams1)
