@@ -137,6 +137,10 @@ The pool files live in `src/data/imagePool.ts`. Images are served as static asse
 
 ## Changelog
 
+### v1.10 — 2026-04-24
+
+- Fixed a bug where the board would briefly display the previous game's card layout for several seconds after "Play Again" before correcting itself — caused by React reusing Card DOM nodes across resets (shared `key={id}` values) so CSS flip-animation state from matched cards bled into the new game, compounded by a mismatch-timer race when Play Again was clicked close to the 1-second mismatch window. The board now fully remounts on each new game, guaranteeing a clean visual slate (carefree)
+
 ### v1.9 — 2026-04-23
 
 - Fixed a race condition where clicking cards immediately after "Play Again" could interact with the new board before the flip-back animation finished — the game appeared to still show the previous layout, causing mismatched expectations on early clicks (carefree)

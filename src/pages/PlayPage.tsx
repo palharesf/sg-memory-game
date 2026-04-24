@@ -88,7 +88,7 @@ export default function PlayPage() {
     () => (configResponse ? responseToConfig(configResponse) : null),
     [configResponse]
   );
-  const { state, flipCard, resetGame, isResetting } = useGameState(config);
+  const { state, flipCard, resetGame, isResetting, boardKey } = useGameState(config);
 
   // Fetch game config on mount
   useEffect(() => {
@@ -287,9 +287,11 @@ export default function PlayPage() {
         </div>
       )}
 
-      {/* Board — pointer-events blocked while cards animate back to face-down after a reset */}
+      {/* Board — pointer-events blocked while cards animate back to face-down after a reset.
+           key={boardKey} forces a full DOM remount on every new game so no CSS flip-animation
+           state from the previous round leaks into the next. */}
       <div style={{ pointerEvents: isResetting ? "none" : undefined }}>
-        <Board cards={state.cards} pairs={config.pairs} onCardClick={flipCard} currentTheme={theme} colorize={colorize} />
+        <Board key={boardKey} cards={state.cards} pairs={config.pairs} onCardClick={flipCard} currentTheme={theme} colorize={colorize} />
       </div>
 
       {/* Previous-win reveal — returning winner, hasn't played this session */}

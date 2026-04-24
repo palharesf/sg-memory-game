@@ -19,6 +19,10 @@ export function useGameState(config: GameConfig | null) {
   const [theme] = useTheme();
   const [state, setState] = useState<GameState>(initialState);
 
+  // Increments each time a new board is generated. Used as React key on <Board>
+  // to force a full DOM remount — guarantees no CSS animation state leaks across games.
+  const [boardKey, setBoardKey] = useState(0);
+
   // Blocks clicks for CARD_FLIP_DURATION_MS after a user-triggered reset so
   // players can't interact with cards that are still mid flip-back animation.
   const [isResetting, setIsResetting] = useState(false);
@@ -89,6 +93,7 @@ export function useGameState(config: GameConfig | null) {
   const initGame = useCallback(() => {
     if (!config) return;
     stopTimer();
+    setBoardKey((k) => k + 1);
     setState({
       ...initialState(),
       cards: config.isRandom
@@ -198,5 +203,5 @@ export function useGameState(config: GameConfig | null) {
     return () => clearTimeout(timer);
   }, [state.boardLocked, config]);
 
-  return { state, flipCard, resetGame, isResetting };
+  return { state, flipCard, resetGame, isResetting, boardKey };
 }
