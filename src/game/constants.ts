@@ -17,8 +17,17 @@ export const minMistakes = (pairs: number): number => Math.ceil(pairs / 2);
 /** How long (ms) to show a mismatched pair before flipping back */
 export const MISMATCH_DELAY_MS = 1000;
 
-/** How long (ms) to block card clicks after a reset — must match the CSS card flip transition duration */
+/** CSS card flip transition duration (ms) — must match `.card-inner` transition in index.css */
 export const CARD_FLIP_DURATION_MS = 300;
+
+/** How long (ms) to block card clicks after a reset on a random-board game.
+ *  Must exceed MISMATCH_DELAY_MS so any in-flight mismatch timer fires and resolves
+ *  against the new (clean) game state before the player can interact again. */
+export const RESET_COOLDOWN_RANDOM_MS = 1200;
+
+/** How long (ms) to block card clicks after a reset on a fixed-board game.
+ *  No mismatch race exists here (no timer/leaderboard), so a shorter pause suffices. */
+export const RESET_COOLDOWN_FIXED_MS = 800;
 
 // ---------------------------------------------------------------------------
 // Grid layout — near-square grids for each pair range

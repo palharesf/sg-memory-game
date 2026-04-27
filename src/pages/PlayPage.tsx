@@ -287,10 +287,13 @@ export default function PlayPage() {
         </div>
       )}
 
-      {/* Board — pointer-events blocked while cards animate back to face-down after a reset.
+      {/* Board — pointer-events blocked during reset cooldown; opacity signals the pause.
            key={boardKey} forces a full DOM remount on every new game so no CSS flip-animation
            state from the previous round leaks into the next. */}
-      <div style={{ pointerEvents: isResetting ? "none" : undefined }}>
+      <div
+        className="transition-opacity duration-300"
+        style={{ pointerEvents: isResetting ? "none" : undefined, opacity: isResetting ? 0.4 : 1 }}
+      >
         <Board key={boardKey} cards={state.cards} pairs={config.pairs} onCardClick={flipCard} currentTheme={theme} colorize={colorize} />
       </div>
 
@@ -311,7 +314,7 @@ export default function PlayPage() {
               {copiedSecret ? "Copied!" : "Copy secret"}
             </Button>
             <Button
-              onClick={() => setPreviousSecretDismissed(true)}
+              onClick={() => { setPreviousSecretDismissed(true); resetGame(); }}
               variant="outline"
               className="border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-bg-elevated)]"
             >

@@ -137,6 +137,12 @@ The pool files live in `src/data/imagePool.ts`. Images are served as static asse
 
 ## Changelog
 
+### v1.11 — 2026-04-27
+
+- Fixed a remaining ghost-window bug where blank face-up cards could appear briefly after "Play Again" — the 1-second mismatch hold timer (a macrotask) could fire after the board reset but before React's async effect cleanup cancelled it; the timer is now also cleared synchronously when the game resets, closing the race entirely (carefree)
+- The board now dims and blocks interaction for a short cooldown after "Play Again" / "Try again" — 1.2 s on random games (outlasting the mismatch timer), 0.8 s on fixed games — giving the game a visible moment to refresh before accepting new clicks
+- Fixed the "Play again" button in the "You've already solved this one!" banner having no effect when clicked mid-game — it dismissed the banner but did not reset the board, timer, or mistake counter (carefree)
+
 ### v1.10 — 2026-04-24
 
 - Fixed a bug where the board would briefly display the previous game's card layout for several seconds after "Play Again" before correcting itself — caused by React reusing Card DOM nodes across resets (shared `key={id}` values) so CSS flip-animation state from matched cards bled into the new game, compounded by a mismatch-timer race when Play Again was clicked close to the 1-second mismatch window. The board now fully remounts on each new game, guaranteeing a clean visual slate (carefree)

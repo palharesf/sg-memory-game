@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { generateBoard, generateFixedBoard } from "@/game/boardGenerator";
 import { shouldIgnoreClick, isMatch, isWon, isLost } from "@/game/rules";
-import { MISMATCH_DELAY_MS, CARD_FLIP_DURATION_MS } from "@/game/constants";
+import { MISMATCH_DELAY_MS, RESET_COOLDOWN_RANDOM_MS, RESET_COOLDOWN_FIXED_MS } from "@/game/constants";
 import { useTheme } from "@/hooks/useTheme";
 import type { GameState, GameConfig } from "@/types/game";
 
@@ -23,11 +23,15 @@ export function useGameState(config: GameConfig | null) {
   // to force a full DOM remount — guarantees no CSS animation state leaks across games.
   const [boardKey, setBoardKey] = useState(0);
 
-  // Blocks clicks for CARD_FLIP_DURATION_MS after a user-triggered reset so
-  // players can't interact with cards that are still mid flip-back animation.
+  // Blocks clicks after a user-triggered reset — long enough to outlast the
+  // mismatch timer (random games) or the card flip animation (fixed games).
   const [isResetting, setIsResetting] = useState(false);
   // Ref mirror for the synchronous check inside flipCard (avoids stale closure).
   const isResettingRef = useRef(false);
+
+  // Holds the active mismatch-delay timer so initGame() can cancel it synchronously,
+  // preventing a race where the macrotask fires after the React effect cleanup fires.
+  const mismatchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Timer via requestAnimationFrame
   const startTimeRef = useRef<number | null>(null);
@@ -92,6 +96,12 @@ export function useGameState(config: GameConfig | null) {
   // Does NOT set isResetting — those are passive resets, not user-triggered.
   const initGame = useCallback(() => {
     if (!config) return;
+    // Cancel any pending mismatch timer synchronously so it cannot fire against
+    // the new game's state — useEffect cleanup is async and can lose this race.
+    if (mismatchTimerRef.current !== null) {
+      clearTimeout(mismatchTimerRef.current);
+      mismatchTimerRef.current = null;
+    }
     stopTimer();
     setBoardKey((k) => k + 1);
     setState({
@@ -107,24 +117,27 @@ export function useGameState(config: GameConfig | null) {
     initGame();
   }, [initGame]);
 
-  // Explicit user-triggered reset. Sets the resetting guard first so that
-  // clicks during the card flip-back CSS animation (CARD_FLIP_DURATION_MS) are
-  // ignored before the board can be interacted with again.
+  // Explicit user-triggered reset. Blocks clicks for the full cooldown so
+  // any in-flight mismatch timer fires and resolves against the new game's
+  // clean state before the player can interact again.
   const resetGame = useCallback(() => {
     isResettingRef.current = true;
     setIsResetting(true);
     initGame();
   }, [initGame]);
 
-  // Clear the resetting guard once the flip-back animation has finished.
+  // Clear the resetting guard after a game-type-appropriate cooldown.
+  // Random games use a longer window (> MISMATCH_DELAY_MS) as a safety net;
+  // fixed games only need to cover the CSS flip animation.
   useEffect(() => {
     if (!isResetting) return;
+    const cooldown = config?.isRandom ? RESET_COOLDOWN_RANDOM_MS : RESET_COOLDOWN_FIXED_MS;
     const t = setTimeout(() => {
       isResettingRef.current = false;
       setIsResetting(false);
-    }, CARD_FLIP_DURATION_MS);
+    }, cooldown);
     return () => clearTimeout(t);
-  }, [isResetting]);
+  }, [isResetting, config?.isRandom]);
 
   // Pure state updater — no side effects inside
   const flipCard = useCallback((cardId: number) => {
@@ -173,7 +186,8 @@ export function useGameState(config: GameConfig | null) {
   useEffect(() => {
     if (!state.boardLocked) return;
 
-    const timer = setTimeout(() => {
+    mismatchTimerRef.current = setTimeout(() => {
+      mismatchTimerRef.current = null;
       setState((prev) => {
         if (!prev.boardLocked) return prev;
 
@@ -200,7 +214,12 @@ export function useGameState(config: GameConfig | null) {
       });
     }, MISMATCH_DELAY_MS);
 
-    return () => clearTimeout(timer);
+    return () => {
+      if (mismatchTimerRef.current !== null) {
+        clearTimeout(mismatchTimerRef.current);
+        mismatchTimerRef.current = null;
+      }
+    };
   }, [state.boardLocked, config]);
 
   return { state, flipCard, resetGame, isResetting, boardKey };
