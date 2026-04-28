@@ -299,7 +299,7 @@ export default function PlayPage() {
 
       {/* Below-board utility row: cooldown indicator or mid-game restart */}
       {isResetting ? (
-        <p className="text-xs text-[var(--color-text-muted)] animate-pulse">New game loading…</p>
+        <p className="text-xs text-[var(--color-text-muted)] animate-pulse">Initializing new game…</p>
       ) : state.status === "playing" ? (
         <button
           onClick={resetGame}
