@@ -8,6 +8,18 @@
 - **Auth:** Steam OpenID 2.0 + JWT session cookie (HS256)
 - **Deploy:** GitHub Actions → `wrangler pages deploy dist`
 
+## Versioning — do this on every release
+
+When work is ready to ship (commit + push), always do all three steps together:
+
+1. **Bump `package.json` → `"version"`** — use the same `X.Y` number as the README heading (e.g. `"1.12"`). The footer reads this at build time; no other file needs touching.
+2. **Add a `### vX.Y — YYYY-MM-DD` changelog entry at the top of the Changelog section in `README.md`** — one bullet per user-visible change, credit the reporter in parentheses if applicable.
+3. **Commit all changed files together** — version bump, changelog, and code in one commit so the repo is never in a state where the code is ahead of the docs.
+
+The version in `package.json` is the single source of truth. The README changelog and the footer both derive from it — don't let them drift.
+
+---
+
 ## Design Context
 
 ### Users

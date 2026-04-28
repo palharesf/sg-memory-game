@@ -38,6 +38,8 @@ export default function Footer() {
             Card Theme &amp; Attributions
           </Link>
           <span className="select-none opacity-30">•</span>
+          <span>v{APP_VERSION}</span>
+          <span className="select-none opacity-30">•</span>
           <Link to="/privacy" className="hover:text-[var(--color-text)] transition-colors">
             Privacy Policy
           </Link>

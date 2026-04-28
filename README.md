@@ -137,6 +137,12 @@ The pool files live in `src/data/imagePool.ts`. Images are served as static asse
 
 ## Changelog
 
+### v1.12 — 2026-04-28
+
+- Added a "New game loading…" pulsing indicator below the board during the reset cooldown, replacing the silent opacity dim — makes the deliberate pause obviously intentional (carefree)
+- Added a "↺ Restart" button below the board during active play so players can abandon and restart at any time — useful when a time or mistake limit is already out of reach (carefree)
+- Footer version number now reads automatically from `package.json` — no manual update needed when shipping
+
 ### v1.11 — 2026-04-27
 
 - Fixed a remaining ghost-window bug where blank face-up cards could appear briefly after "Play Again" — the 1-second mismatch hold timer (a macrotask) could fire after the board reset but before React's async effect cleanup cancelled it; the timer is now also cleared synchronously when the game resets, closing the race entirely (carefree)

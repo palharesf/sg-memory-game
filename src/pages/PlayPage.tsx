@@ -297,6 +297,18 @@ export default function PlayPage() {
         <Board key={boardKey} cards={state.cards} pairs={config.pairs} onCardClick={flipCard} currentTheme={theme} colorize={colorize} />
       </div>
 
+      {/* Below-board utility row: cooldown indicator or mid-game restart */}
+      {isResetting ? (
+        <p className="text-xs text-[var(--color-text-muted)] animate-pulse">New game loading…</p>
+      ) : state.status === "playing" ? (
+        <button
+          onClick={resetGame}
+          className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+        >
+          ↺ Restart
+        </button>
+      ) : null}
+
       {/* Previous-win reveal — returning winner, hasn't played this session */}
       {previousSecret && !previousSecretDismissed && state.status !== "won" && (
         <div className="w-full rounded-lg border border-[var(--color-success)]/40 bg-[var(--color-success)]/10 px-4 py-5 space-y-3">
