@@ -139,8 +139,8 @@ The pool files live in `src/data/imagePool.ts`. Images are served as static asse
 
 ### v1.13 — 2026-04-30
 
-- Creators can now view the secret for any of their games directly from the /history page — click "Secret" in the Games Created table to open a popup with the secret and a copy button
-- Players can now view secrets for games they've already won directly from the /history page — click "Secret" in the Games Won table, no need to revisit each game page
+- Creators can now view the secret for any of their games directly from the /history page — click "Secret" in the Games Created table to open a popup with the secret and a copy button (aez76)
+- Players can now view secrets for games they've already won directly from the /history page — click "Secret" in the Games Won table, no need to revisit each game page (aez76)
 
 ### v1.12 — 2026-04-28
 
