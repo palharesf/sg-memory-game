@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { KeyRound } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { api } from "@/services/api";
 import { formatTime } from "@/lib/formatTime";
@@ -192,9 +193,10 @@ function wonGameRow(
       <td className="px-4 py-3">
         <button
           onClick={() => onReveal(entry.gameId, entry.secret)}
-          className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+          aria-label="View secret"
+          className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
         >
-          Secret
+          <KeyRound size={14} />
         </button>
       </td>
     </>
@@ -237,21 +239,22 @@ function createdGameRow(
         )}
       </td>
       <td className="px-4 py-3">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => onReveal(game.id, game.secret)}
-            className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
-          >
-            Secret
-          </button>
-          <button
-            disabled={toggling}
-            onClick={() => onToggleLock(game, !isLocked)}
-            className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-          >
-            {isLocked ? "Reopen" : "End"}
-          </button>
-        </div>
+        <button
+          onClick={() => onReveal(game.id, game.secret)}
+          aria-label="View secret"
+          className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+        >
+          <KeyRound size={14} />
+        </button>
+      </td>
+      <td className="px-4 py-3">
+        <button
+          disabled={toggling}
+          onClick={() => onToggleLock(game, !isLocked)}
+          className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          {isLocked ? "Reopen" : "End"}
+        </button>
       </td>
     </>
   );
@@ -327,7 +330,7 @@ export default function HistoryPage() {
       <Section<CreatedGame>
         title="Games Created"
         fetchPage={(p) => api.getMyGames(p)}
-        columns={["Game", "Board", "Limits", "Created", "Status", ""]}
+        columns={["Game", "Board", "Limits", "Created", "Status", "Secret", ""]}
         renderRow={(game) =>
           createdGameRow(
             game,
@@ -342,7 +345,7 @@ export default function HistoryPage() {
       <Section<HistoryEntry>
         title="Games Won"
         fetchPage={(p) => api.getHistory(p)}
-        columns={["Game", "Best time", "Won", ""]}
+        columns={["Game", "Best time", "Won", "Secret"]}
         renderRow={(entry) => wonGameRow(entry, handleReveal)}
       />
 
