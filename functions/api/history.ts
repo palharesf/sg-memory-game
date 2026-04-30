@@ -25,10 +25,11 @@ export const onRequestGet: PagesFunction<Env> = async (ctx) => {
       .first<{ total: number }>(),
 
     ctx.env.DB.prepare(
-      `SELECT game_id, has_won, best_time_ms, first_played_at, won_at
-       FROM user_game_records
-       WHERE steam_id = ? AND has_won = 1
-       ORDER BY won_at DESC
+      `SELECT ugr.game_id, ugr.has_won, ugr.best_time_ms, ugr.first_played_at, ugr.won_at, g.secret
+       FROM user_game_records ugr
+       JOIN games g ON g.id = ugr.game_id
+       WHERE ugr.steam_id = ? AND ugr.has_won = 1
+       ORDER BY ugr.won_at DESC
        LIMIT ? OFFSET ?`
     )
       .bind(user.steamId, PAGE_SIZE, offset)
@@ -38,6 +39,7 @@ export const onRequestGet: PagesFunction<Env> = async (ctx) => {
         best_time_ms: number | null;
         first_played_at: number;
         won_at: number | null;
+        secret: string;
       }>(),
   ]);
 
@@ -47,6 +49,7 @@ export const onRequestGet: PagesFunction<Env> = async (ctx) => {
     bestTimeMs: row.best_time_ms,
     firstPlayedAt: row.first_played_at,
     wonAt: row.won_at,
+    secret: row.secret,
   }));
 
   return Response.json({

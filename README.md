@@ -137,6 +137,11 @@ The pool files live in `src/data/imagePool.ts`. Images are served as static asse
 
 ## Changelog
 
+### v1.13 — 2026-04-30
+
+- Creators can now view the secret for any of their games directly from the /history page — click "Secret" in the Games Created table to open a popup with the secret and a copy button
+- Players can now view secrets for games they've already won directly from the /history page — click "Secret" in the Games Won table, no need to revisit each game page
+
 ### v1.12 — 2026-04-28
 
 - Added a "New game loading…" pulsing indicator below the board during the reset cooldown, replacing the silent opacity dim — makes the deliberate pause obviously intentional (carefree)

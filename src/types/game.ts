@@ -105,6 +105,7 @@ export interface HistoryEntry {
   bestTimeMs: number | null;
   firstPlayedAt: number;
   wonAt: number | null;
+  secret: string;
 }
 
 export interface CreatedGame {
@@ -115,6 +116,7 @@ export interface CreatedGame {
   isRandom: boolean;
   createdAt: number;
   lockedAt: number | null;
+  secret: string;
 }
 
 export interface PaginatedResult<T> {

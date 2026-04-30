@@ -165,7 +165,10 @@ function Section<T>({ title, fetchPage, renderRow, columns }: SectionProps<T>) {
 // Row renderers
 // ---------------------------------------------------------------------------
 
-function wonGameRow(entry: HistoryEntry) {
+function wonGameRow(
+  entry: HistoryEntry,
+  onReveal: (gameId: string, secret: string) => void,
+) {
   return (
     <>
       <td className="px-4 py-3">
@@ -186,6 +189,14 @@ function wonGameRow(entry: HistoryEntry) {
       <td className="px-4 py-3 text-[var(--color-text-muted)]">
         {entry.wonAt ? formatDate(entry.wonAt) : "—"}
       </td>
+      <td className="px-4 py-3">
+        <button
+          onClick={() => onReveal(entry.gameId, entry.secret)}
+          className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+        >
+          Secret
+        </button>
+      </td>
     </>
   );
 }
@@ -195,6 +206,7 @@ function createdGameRow(
   lockedAt: number | null,
   onToggleLock: (game: CreatedGame, lock: boolean) => void,
   toggling: boolean,
+  onReveal: (gameId: string, secret: string) => void,
 ) {
   const mode = game.isRandom ? "Random" : "Fixed";
   const constraints = [
@@ -225,13 +237,21 @@ function createdGameRow(
         )}
       </td>
       <td className="px-4 py-3">
-        <button
-          disabled={toggling}
-          onClick={() => onToggleLock(game, !isLocked)}
-          className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-        >
-          {isLocked ? "Reopen" : "End"}
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => onReveal(game.id, game.secret)}
+            className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+          >
+            Secret
+          </button>
+          <button
+            disabled={toggling}
+            onClick={() => onToggleLock(game, !isLocked)}
+            className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            {isLocked ? "Reopen" : "End"}
+          </button>
+        </div>
       </td>
     </>
   );
@@ -245,6 +265,8 @@ export default function HistoryPage() {
   const { user, loading: authLoading } = useAuth();
   const [lockOverrides, setLockOverrides] = useState<Record<string, number | null>>({});
   const [toggling, setToggling] = useState<Record<string, boolean>>({});
+  const [secretPopup, setSecretPopup] = useState<{ gameId: string; secret: string } | null>(null);
+  const [secretCopied, setSecretCopied] = useState(false);
 
   function handleToggleLock(game: CreatedGame, lock: boolean) {
     setToggling((prev) => ({ ...prev, [game.id]: true }));
@@ -254,6 +276,19 @@ export default function HistoryPage() {
       })
       .catch(() => {})
       .finally(() => setToggling((prev) => ({ ...prev, [game.id]: false })));
+  }
+
+  function handleReveal(gameId: string, secret: string) {
+    setSecretPopup({ gameId, secret });
+    setSecretCopied(false);
+  }
+
+  function handleCopySecret() {
+    if (!secretPopup) return;
+    navigator.clipboard.writeText(secretPopup.secret).then(() => {
+      setSecretCopied(true);
+      setTimeout(() => setSecretCopied(false), 2000);
+    });
   }
 
   if (authLoading) {
@@ -299,6 +334,7 @@ export default function HistoryPage() {
             game.id in lockOverrides ? lockOverrides[game.id] : game.lockedAt,
             handleToggleLock,
             toggling[game.id] ?? false,
+            handleReveal,
           )
         }
       />
@@ -306,9 +342,44 @@ export default function HistoryPage() {
       <Section<HistoryEntry>
         title="Games Won"
         fetchPage={(p) => api.getHistory(p)}
-        columns={["Game", "Best time", "Won"]}
-        renderRow={wonGameRow}
+        columns={["Game", "Best time", "Won", ""]}
+        renderRow={(entry) => wonGameRow(entry, handleReveal)}
       />
+
+      {secretPopup && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          onClick={() => setSecretPopup(null)}
+        >
+          <div className="absolute inset-0 bg-black/60" />
+          <div
+            className="relative z-10 max-w-md w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-6 space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <h2 className="font-medium text-[var(--color-text-bright)]">Secret</h2>
+              <span className="font-mono text-xs text-[var(--color-text-muted)] pt-0.5">{secretPopup.gameId}</span>
+            </div>
+            <p className="font-mono text-sm text-[var(--color-text)] break-all bg-[var(--color-bg-base)] rounded px-3 py-2.5">
+              {secretPopup.secret}
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={handleCopySecret}
+                className="text-sm px-3 py-1.5 rounded border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors min-w-[60px]"
+              >
+                {secretCopied ? "Copied!" : "Copy"}
+              </button>
+              <button
+                onClick={() => setSecretPopup(null)}
+                className="text-sm px-3 py-1.5 rounded bg-[var(--color-primary)] text-[var(--color-bg-base)] hover:bg-[var(--color-primary-hover)] transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
