@@ -47,7 +47,7 @@ A note on leaderboards: they appear on all *Random* board games and are open to 
 
 **Your history**
 
-Signed-in players can visit *My Games* to see every game they've created and every game they've won, along with their best times.
+Signed-in players can visit *My Games* to see every game they've created and every game they've won, along with their best times. Click the key icon next to any created game to view its secret, or next to any won game to revisit the secret you unlocked — no need to go back to the game page.
 
 ## I want to add an image for the project! Can I?
 Please do! Remember when you created art for the Advent Calendar? Or for a puzzle? Or for fun? I would love if you donated it to this project! I'll reserve a comment in the thread for art donation, feel free to comment there if you want to donate something you created. Ideally, 512x512 transparent PNG. If I use in the project I'll give you attribution for it, and that's it. Also if there's too much interest in art donation, I might curate which ones will actually show up in the game (or keep a massive list, who knows), so by donating donating your art you agree to that.
