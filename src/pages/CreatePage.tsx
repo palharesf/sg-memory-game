@@ -247,7 +247,7 @@ export default function CreatePage() {
             <p className="text-xs text-[var(--color-text-muted)] mt-0.5">
               {requireLoginToReveal
                 ? "Players who are not logged in to Steam will never see the secret, even after solving the game."
-                : "All players see the secret after solving — recommended."}
+                : "Currently turned off, allowing all players to see the secret after solving — recommended."}
             </p>
           </div>
           <button
@@ -270,7 +270,7 @@ export default function CreatePage() {
         </div>
         {requireLoginToReveal && (
           <p className="text-xs font-bold text-[var(--color-danger)] bg-[var(--color-danger)]/10 border border-[var(--color-danger)]/50 rounded px-3 py-2">
-            ⚠ Warning: Players who are not logged in to Steam will be locked out of the secret permanently, even after solving the game. This is hostile to non-logged-in players.
+            ⚠ Warning: Players who are not logged in to Steam will be locked out of the secret permanently, even after solving the game.
           </p>
         )}
 
