@@ -1,0 +1,1 @@
+ALTER TABLE games ADD COLUMN require_login_to_reveal INTEGER DEFAULT 0 NOT NULL;

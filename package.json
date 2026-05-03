@@ -1,7 +1,7 @@
 {
   "name": "sg-memory-game",
   "private": true,
-  "version": "1.13",
+  "version": "1.14",
   "type": "module",
   "scripts": {
     "dev": "vite",

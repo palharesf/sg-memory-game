@@ -18,6 +18,7 @@ export default function CreatePage() {
   const [mistakes, setMistakes] = useState<number | "">("");
   const [timeLimit, setTimeLimit] = useState<number | "">("");
   const [secret, setSecret] = useState("");
+  const [requireLoginToReveal, setRequireLoginToReveal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -54,6 +55,7 @@ export default function CreatePage() {
         mistakes: isRandom ? mistakesValue : null,
         timeLimit: isRandom ? (timeLimit === "" ? null : timeLimit) : null,
         secret: secret.trim(),
+        requireLoginToReveal,
       });
       navigate(`/play/${id}`);
     } catch (err) {
@@ -228,6 +230,49 @@ export default function CreatePage() {
             Only shown to players after they win — never visible before.
           </p>
         </div>
+
+        {/* Require login to reveal */}
+        <div
+          className={[
+            "flex items-center justify-between p-3 rounded-lg border transition-colors",
+            requireLoginToReveal
+              ? "bg-[var(--color-danger)]/10 border-[var(--color-danger)]/50"
+              : "bg-[var(--color-bg-elevated)] border-[var(--color-border)]",
+          ].join(" ")}
+        >
+          <div className="pr-4">
+            <p className={["text-sm font-medium", requireLoginToReveal ? "text-[var(--color-danger)]" : "text-[var(--color-text)]"].join(" ")}>
+              Require Steam login to see secret
+            </p>
+            <p className="text-xs text-[var(--color-text-muted)] mt-0.5">
+              {requireLoginToReveal
+                ? "Players who are not logged in to Steam will never see the secret, even after solving the game."
+                : "All players see the secret after solving — recommended."}
+            </p>
+          </div>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={requireLoginToReveal}
+            onClick={() => setRequireLoginToReveal((v) => !v)}
+            className={[
+              "relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors",
+              requireLoginToReveal ? "bg-[var(--color-danger)]" : "bg-[var(--color-bg-hover)]",
+            ].join(" ")}
+          >
+            <span
+              className={[
+                "pointer-events-none inline-block h-5 w-5 rounded-full bg-[var(--color-text-bright)] shadow transition-transform",
+                requireLoginToReveal ? "translate-x-5" : "translate-x-0",
+              ].join(" ")}
+            />
+          </button>
+        </div>
+        {requireLoginToReveal && (
+          <p className="text-xs font-bold text-[var(--color-danger)] bg-[var(--color-danger)]/10 border border-[var(--color-danger)]/50 rounded px-3 py-2">
+            ⚠ Warning: Players who are not logged in to Steam will be locked out of the secret permanently, even after solving the game. This is hostile to non-logged-in players.
+          </p>
+        )}
 
         {error && (
           <p className="text-sm text-[var(--color-danger)] bg-[var(--color-danger)]/10 border border-[var(--color-danger)]/30 rounded px-3 py-2">

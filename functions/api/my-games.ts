@@ -25,7 +25,7 @@ export const onRequestGet: PagesFunction<Env> = async (ctx) => {
       .first<{ total: number }>(),
 
     ctx.env.DB.prepare(
-      `SELECT id, pairs, mistakes, time_limit, is_random, created_at, locked_at, secret
+      `SELECT id, pairs, mistakes, time_limit, is_random, created_at, locked_at, secret, require_login_to_reveal
        FROM games
        WHERE creator_steam_id = ?
        ORDER BY created_at DESC
@@ -41,6 +41,7 @@ export const onRequestGet: PagesFunction<Env> = async (ctx) => {
         created_at: number;
         locked_at: number | null;
         secret: string;
+        require_login_to_reveal: number;
       }>(),
   ]);
 
@@ -53,6 +54,7 @@ export const onRequestGet: PagesFunction<Env> = async (ctx) => {
     createdAt: row.created_at,
     lockedAt: row.locked_at,
     secret: row.secret,
+    requireLoginToReveal: row.require_login_to_reveal === 1,
   }));
 
   return Response.json({

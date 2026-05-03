@@ -239,6 +239,13 @@ function createdGameRow(
         )}
       </td>
       <td className="px-4 py-3">
+        {game.requireLoginToReveal ? (
+          <span className="text-xs font-semibold text-[var(--color-danger)]">Yes</span>
+        ) : (
+          <span className="text-xs text-[var(--color-text-muted)]">No</span>
+        )}
+      </td>
+      <td className="px-4 py-3">
         <button
           onClick={() => onReveal(game.id, game.secret)}
           aria-label="View secret"
@@ -330,7 +337,7 @@ export default function HistoryPage() {
       <Section<CreatedGame>
         title="Games Created"
         fetchPage={(p) => api.getMyGames(p)}
-        columns={["Game", "Board", "Limits", "Created", "Status", "Secret", ""]}
+        columns={["Game", "Board", "Limits", "Created", "Status", "Req. Login", "Secret", ""]}
         renderRow={(game) =>
           createdGameRow(
             game,

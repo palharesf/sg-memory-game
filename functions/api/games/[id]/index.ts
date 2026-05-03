@@ -10,7 +10,7 @@ export const onRequestGet: PagesFunction<Env> = async (ctx) => {
   const id = ctx.params["id"] as string;
 
   const row = await ctx.env.DB.prepare(
-    `SELECT g.id, g.pairs, g.mistakes, g.time_limit, g.is_random, g.theme, g.creator_steam_id, g.created_at, g.locked_at,
+    `SELECT g.id, g.pairs, g.mistakes, g.time_limit, g.is_random, g.theme, g.creator_steam_id, g.created_at, g.locked_at, g.require_login_to_reveal,
             u.username AS creator_username, u.avatar_url AS creator_avatar
      FROM games g
      LEFT JOIN users u ON u.steam_id = g.creator_steam_id
@@ -27,6 +27,7 @@ export const onRequestGet: PagesFunction<Env> = async (ctx) => {
       creator_steam_id: string | null;
       created_at: number;
       locked_at: number | null;
+      require_login_to_reveal: number;
       creator_username: string | null;
       creator_avatar: string | null;
     }>();
@@ -47,6 +48,7 @@ export const onRequestGet: PagesFunction<Env> = async (ctx) => {
     creatorAvatar: row.creator_avatar,
     createdAt: row.created_at,
     lockedAt: row.locked_at,
+    requireLoginToReveal: row.require_login_to_reveal === 1,
   };
 
   return Response.json(response);

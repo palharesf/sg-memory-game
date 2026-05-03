@@ -60,6 +60,7 @@ export interface CreateGameRequest {
   timeLimit: number | null;
   isRandom: boolean;
   secret: string;
+  requireLoginToReveal?: boolean;
 }
 
 export interface CreateGameResponse {
@@ -78,6 +79,7 @@ export interface GameConfigResponse {
   creatorAvatar: string | null;
   createdAt: number;
   lockedAt: number | null;
+  requireLoginToReveal: boolean;
 }
 
 export interface CompleteGameRequest {
@@ -117,6 +119,7 @@ export interface CreatedGame {
   createdAt: number;
   lockedAt: number | null;
   secret: string;
+  requireLoginToReveal: boolean;
 }
 
 export interface PaginatedResult<T> {

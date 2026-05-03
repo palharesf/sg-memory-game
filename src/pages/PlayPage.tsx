@@ -102,11 +102,13 @@ export default function PlayPage() {
   // Non-random wins: just fetch the secret, no score tracking
   useEffect(() => {
     if (state.status !== "won" || !id || config?.isRandom !== false) return;
+    if (configResponse?.requireLoginToReveal && !user) return;
 
     api
       .completeGame(id, { timeMs: 0 })
       .then(({ secret: s }) => setSecret(s))
       .catch(() => setSubmitError("Could not retrieve the secret."));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.status, id, config?.isRandom]);
 
   // Submit win when status transitions to "won" (random games only).
@@ -115,6 +117,7 @@ export default function PlayPage() {
   // Including it would risk a duplicate submission if anything caused a re-render.
   useEffect(() => {
     if (state.status !== "won" || !id || !config?.isRandom) return;
+    if (configResponse?.requireLoginToReveal && !user) return;
 
     let cancelled = false;
     api
@@ -136,8 +139,10 @@ export default function PlayPage() {
   // Auto-reveal: check localStorage first (works for everyone), then fall back
   // to D1 for logged-in users (cross-device sync). Saves to localStorage whenever
   // D1 returns a hit so future visits on this device are instant.
+  // Suppressed entirely for login-required games when not logged in.
   useEffect(() => {
     if (!id || !config) return;
+    if (configResponse?.requireLoginToReveal && !user) return;
 
     const stored = getWonGame(id);
     if (stored) {
@@ -254,6 +259,15 @@ export default function PlayPage() {
         </button>
       </div>
 
+      {/* Login-required banner — permanent, shown to everyone */}
+      {configResponse?.requireLoginToReveal && (
+        <div className="w-full rounded-lg border border-[var(--color-danger)] bg-[var(--color-danger)]/15 px-4 py-3">
+          <p className="text-sm font-bold text-[var(--color-danger)]">
+            ⚠ The creator of this game requires you to be logged in to Steam to see the secret. Solving this game without being logged in will not reveal anything.
+          </p>
+        </div>
+      )}
+
       {/* Ended banner */}
       {configResponse?.lockedAt && (
         <div className="w-full rounded-lg border border-[var(--color-warning)]/40 bg-[var(--color-warning)]/10 px-4 py-3">
@@ -349,7 +363,11 @@ export default function PlayPage() {
             <p className="text-xs text-[var(--color-warning)]">{submitError}</p>
           )}
 
-          {secret !== null ? (
+          {configResponse?.requireLoginToReveal && !user ? (
+            <p className="text-sm text-[var(--color-text-muted)]">
+              Log in to Steam and solve this game again to see the secret.
+            </p>
+          ) : secret !== null ? (
             <div className="space-y-1">
               <p className="text-xs text-[var(--color-text-muted)]">Your secret:</p>
               <SecretValue value={secret} />

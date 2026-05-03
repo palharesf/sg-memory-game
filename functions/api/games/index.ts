@@ -40,11 +40,12 @@ export const onRequestPost: PagesFunction<Env> = async (ctx) => {
   const timeLimit = isRandom ? (body.timeLimit ?? null) : null;
 
   const theme = body.theme === "donated" ? "donated" : "generic";
+  const requireLoginToReveal = body.requireLoginToReveal === true ? 1 : 0;
 
   await ctx.env.DB.prepare(
-    "INSERT INTO games (id, pairs, mistakes, time_limit, is_random, theme, secret, creator_steam_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+    "INSERT INTO games (id, pairs, mistakes, time_limit, is_random, theme, secret, creator_steam_id, require_login_to_reveal) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
   )
-    .bind(id, body.pairs, mistakes, timeLimit, isRandom ? 1 : 0, theme, body.secret.trim(), creatorSteamId)
+    .bind(id, body.pairs, mistakes, timeLimit, isRandom ? 1 : 0, theme, body.secret.trim(), creatorSteamId, requireLoginToReveal)
     .run();
 
   // Track games created if user is logged in

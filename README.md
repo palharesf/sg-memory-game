@@ -137,6 +137,13 @@ The pool files live in `src/data/imagePool.ts`. Images are served as static asse
 
 ## Changelog
 
+### v1.14 — 2026-05-03
+
+- Creators can now require Steam login to see the secret: a new "Require Steam login to see secret" toggle on the creator page gates the secret reveal to logged-in players only. Logged-out players who solve the game are told they must solve it again while logged in.
+- Games with this setting show a permanent red warning banner to all players throughout the entire game session.
+- The leaderboard for login-required games shows all solvers with no Top 10 cap, so creators can see every participant.
+- The /history Games Created table now has a "Req. Login" column showing which games have this setting enabled.
+
 ### v1.13 — 2026-04-30
 
 - Creators can now view the secret for any of their games directly from the /history page — click the key icon in the Games Created table to open a popup with the secret and a copy button (aez76)
