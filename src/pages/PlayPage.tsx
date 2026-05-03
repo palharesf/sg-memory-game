@@ -277,6 +277,9 @@ export default function PlayPage() {
         </div>
       )}
 
+      {/* Board area — hidden entirely when a login-required game has been ended */}
+      {!(configResponse?.requireLoginToReveal && configResponse?.lockedAt) && (<>
+
       {/* Background + card colour pickers */}
       <div className="w-full flex flex-wrap justify-end gap-x-4 gap-y-1.5">
         <BackgroundPicker value={bg} onChange={setBg} label="Area:" />
@@ -322,33 +325,6 @@ export default function PlayPage() {
           ↺ Restart
         </button>
       ) : null}
-
-      {/* Previous-win reveal — returning winner, hasn't played this session */}
-      {previousSecret && !previousSecretDismissed && state.status !== "won" && (
-        <div className="w-full rounded-lg border border-[var(--color-success)]/40 bg-[var(--color-success)]/10 px-4 py-5 space-y-3">
-          <p className="text-[var(--color-success)] font-semibold text-lg">You've already solved this one!</p>
-          <div className="space-y-1">
-            <p className="text-xs text-[var(--color-text-muted)]">Your secret:</p>
-            <SecretValue value={previousSecret} />
-          </div>
-          <div className="flex gap-2 flex-wrap">
-            <Button
-              onClick={() => handleCopySecret(previousSecret)}
-              variant="outline"
-              className="border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-bg-elevated)]"
-            >
-              {copiedSecret ? "Copied!" : "Copy secret"}
-            </Button>
-            <Button
-              onClick={() => { setPreviousSecretDismissed(true); resetGame(); }}
-              variant="outline"
-              className="border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-bg-elevated)]"
-            >
-              Play again
-            </Button>
-          </div>
-        </div>
-      )}
 
       {/* Game over overlays */}
       {state.status === "won" && (
@@ -423,7 +399,36 @@ export default function PlayPage() {
         </div>
       )}
 
+      </>)}
 
+      {/* Previous-win reveal — returning winner, hasn't played this session */}
+      {previousSecret && !previousSecretDismissed && state.status !== "won" && (
+        <div className="w-full rounded-lg border border-[var(--color-success)]/40 bg-[var(--color-success)]/10 px-4 py-5 space-y-3">
+          <p className="text-[var(--color-success)] font-semibold text-lg">You've already solved this one!</p>
+          <div className="space-y-1">
+            <p className="text-xs text-[var(--color-text-muted)]">Your secret:</p>
+            <SecretValue value={previousSecret} />
+          </div>
+          <div className="flex gap-2 flex-wrap">
+            <Button
+              onClick={() => handleCopySecret(previousSecret)}
+              variant="outline"
+              className="border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-bg-elevated)]"
+            >
+              {copiedSecret ? "Copied!" : "Copy secret"}
+            </Button>
+            {!(configResponse?.requireLoginToReveal && configResponse?.lockedAt) && (
+              <Button
+                onClick={() => { setPreviousSecretDismissed(true); resetGame(); }}
+                variant="outline"
+                className="border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-bg-elevated)]"
+              >
+                Play again
+              </Button>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Leaderboard — random games only */}
       {config.isRandom && (

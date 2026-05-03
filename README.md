@@ -143,6 +143,7 @@ The pool files live in `src/data/imagePool.ts`. Images are served as static asse
 - Games with this setting show a permanent red warning banner to all players throughout the entire game session.
 - The leaderboard for login-required games shows all solvers with no Top 10 cap, so creators can see every participant.
 - The /history Games Created table now has a "Req. Login" column showing which games have this setting enabled.
+- Ending a login-required game locks it completely: the board is hidden and no new solves are possible, preserving the leaderboard as a permanent snapshot of everyone who solved it before it ended.
 
 ### v1.13 — 2026-04-30
 
