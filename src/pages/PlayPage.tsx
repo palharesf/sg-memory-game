@@ -263,7 +263,7 @@ export default function PlayPage() {
       {configResponse?.requireLoginToReveal && (
         <div className="w-full rounded-lg border border-[var(--color-danger)] bg-[var(--color-danger)]/15 px-4 py-3">
           <p className="text-sm font-bold text-[var(--color-danger)]">
-            ⚠ The creator of this game requires you to be logged in to Steam to see the secret. Solving this game without being logged in will not reveal anything.
+            ⚠ The creator of this game requires participants to be signed in to SG Memory via Steam before the secret is revealed. If you haven't connected your Steam account, the secret will remain hidden even after you solve the game. This is intended to confirm that everyone receiving the secret has genuinely completed the puzzle.
           </p>
         </div>
       )}
